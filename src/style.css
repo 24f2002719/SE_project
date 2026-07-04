@@ -1,0 +1,62 @@
+@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@400;600&family=Montserrat:wght@400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-[#F8FAFC] text-on-surface font-body-md antialiased;
+  }
+}
+
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+.material-symbols-outlined.filled {
+  font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+/* Custom scrollbar for tables and charts */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #c6c6cd;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #76777d;
+}
+
+.input-glow:focus {
+  border-color: #000000;
+  box-shadow: 0 0 0 2px rgba(123, 208, 255, 0.2);
+  outline: none;
+}
+
+.input-focus-ring:focus {
+  border-color: #000000;
+  box-shadow: 0 0 0 2px rgba(123, 208, 255, 0.2);
+  outline: none;
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid #c6c6cd;
+}
+
+.glass-panel {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid #c6c6cd;
+}
