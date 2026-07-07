@@ -172,7 +172,7 @@
             <!-- Step 4: Waiver Signature -->
             <div v-if="step === 4" class="space-y-md">
               <div>
-                <h2 class="font-headline-sm text-primary mb-xs">Liability Waiver</h2>
+                <h2 class="font-headline-sm text-primary mb-xs">Liability Release &amp; Waiver</h2>
                 <p class="font-body-sm text-on-surface-variant">Sign the digital release of liability form to complete your registry.</p>
               </div>
               <div class="bg-slate-50 p-sm rounded-lg border border-outline-variant/30 text-xs leading-relaxed max-h-40 overflow-y-auto">
@@ -261,7 +261,7 @@ const router = useRouter()
 const store = useClubStore()
 
 const step = ref(1)
-const stepNames = ['Details', 'Plan', 'Safety', 'Waiver', 'Tour']
+const stepNames = ['Details', 'Plan', 'Safety', 'Liability Release', 'Tour']
 const validationError = ref('')
 
 const form = reactive({

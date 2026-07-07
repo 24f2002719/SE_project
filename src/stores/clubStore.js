@@ -10,7 +10,8 @@ export const useClubStore = defineStore('club', {
       { name: 'Deepanshi Aggarwal', email: 'deepanshi@iiserb.ac.in', password: 'password123', role: 'coach' },
       { name: 'Sarah Miller', email: 'sarah@iiserb.ac.in', password: 'password123', role: 'coach' },
       { name: 'Krishna Agarwal', email: 'krishna@iiserb.ac.in', password: 'password123', role: 'admin' },
-      { name: 'Dr. Verma', email: 'verma@iiserb.ac.in', password: 'password123', role: 'faculty' }
+      { name: 'Dr. Verma', email: 'verma@iiserb.ac.in', password: 'password123', role: 'faculty' },
+      { name: 'Mr. Mercer (Parent)', email: 'parent@iiserb.ac.in', password: 'password123', role: 'parent', childEmail: 'alex@iiserb.ac.in' }
     ],
 
     // Facilities Catalog
@@ -250,6 +251,13 @@ export const useClubStore = defineStore('club', {
           time: 'Just now',
           type: 'info'
         })
+
+        // Broadcast to waitlists
+        this.broadcastAnnouncement(
+          'Court Slot Opened!',
+          `A slot for ${court ? court.name : 'Court'} on ${booking.date} at ${booking.startTime} - ${booking.endTime} is now available!`,
+          'success'
+        )
         return { success: true }
       }
       return { success: false, message: 'Booking not found.' }
@@ -377,6 +385,28 @@ export const useClubStore = defineStore('club', {
       }
       this.attendance.push(newSession)
       return { success: true, session: newSession }
+    },
+
+    updateSession(sessionId, sport, date, time, title, facility) {
+      const session = this.attendance.find(s => s.id === sessionId)
+      if (session) {
+        session.sport = sport
+        session.date = date
+        session.time = time
+        session.title = title
+        session.facility = facility
+        return { success: true, session }
+      }
+      return { success: false, message: 'Session not found.' }
+    },
+
+    deleteSession(sessionId) {
+      const index = this.attendance.findIndex(s => s.id === sessionId)
+      if (index !== -1) {
+        this.attendance.splice(index, 1)
+        return { success: true }
+      }
+      return { success: false, message: 'Session not found.' }
     },
 
     // Support tickets
@@ -555,6 +585,39 @@ export const useClubStore = defineStore('club', {
         return { success: true }
       }
       return { success: false }
+    },
+
+    updateUserProfile(email, name, phone, dob) {
+      const user = this.users.find(u => u.email.toLowerCase() === email.toLowerCase())
+      if (user) {
+        user.name = name
+        user.phone = phone
+        user.dob = dob
+        if (this.currentUser && this.currentUser.email.toLowerCase() === email.toLowerCase()) {
+          this.currentUser.name = name
+          this.currentUser.phone = phone
+          this.currentUser.dob = dob
+          sessionStorage.setItem('user', JSON.stringify(this.currentUser))
+        }
+        return { success: true }
+      }
+      return { success: false, message: 'User not found.' }
+    },
+    
+    changeUserPassword(email, oldPassword, newPassword) {
+      const user = this.users.find(u => u.email.toLowerCase() === email.toLowerCase())
+      if (user) {
+        if (user.password !== oldPassword) {
+          return { success: false, message: 'Incorrect old password.' }
+        }
+        user.password = newPassword
+        if (this.currentUser && this.currentUser.email.toLowerCase() === email.toLowerCase()) {
+          this.currentUser.password = newPassword
+          sessionStorage.setItem('user', JSON.stringify(this.currentUser))
+        }
+        return { success: true }
+      }
+      return { success: false, message: 'User not found.' }
     }
   }
 })

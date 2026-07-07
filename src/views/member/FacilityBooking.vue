@@ -60,39 +60,58 @@
           </form>
         </div>
 
-        <!-- Catalog and My Bookings (Span 8) -->
+        <!-- Visual Slot Grid & My Bookings (Span 8) -->
         <div class="lg:col-span-8 space-y-gutter">
           
-          <!-- Live Catalog Grid -->
+          <!-- Visual Time Slots Calendar Grid -->
           <div class="bg-white border border-outline-variant rounded-xl p-md shadow-sm">
-            <h2 class="font-headline-sm text-sm font-bold text-primary mb-md pb-sm border-b border-outline-variant flex items-center gap-xs">
-              <span class="material-symbols-outlined text-secondary">explore</span>
-              Facilities Directory
-            </h2>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+            <div class="flex justify-between items-center mb-md pb-sm border-b border-outline-variant">
+              <h2 class="font-headline-sm text-sm font-bold text-primary flex items-center gap-xs">
+                <span class="material-symbols-outlined text-secondary">calendar_view_day</span>
+                Visual Slots Calendar: {{ getCourtName(form.courtId) }}
+              </h2>
+              <span class="text-xs font-semibold bg-slate-100 text-on-surface-variant px-2.5 py-0.5 rounded-full">{{ form.date }}</span>
+            </div>
+
+            <!-- Time slots grid -->
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-sm">
               <div 
-                v-for="c in store.courts" 
-                :key="c.id" 
-                class="border border-outline-variant rounded-lg p-sm relative overflow-hidden bg-slate-50/20"
+                v-for="slot in hourlySlots" 
+                :key="slot.start"
+                :class="[
+                  slot.booked ? 'border-red-200 bg-red-50/20' : 
+                  (form.startTime === slot.start && form.endTime === slot.end) ? 'border-secondary bg-secondary-fixed/10 ring-2 ring-secondary' : 'border-outline-variant hover:bg-slate-50/50'
+                ]"
+                class="border rounded-lg p-sm transition-all flex flex-col justify-between min-h-[96px] relative"
               >
-                <div class="absolute left-0 top-0 bottom-0 w-1" :style="{ backgroundColor: c.accent }"></div>
-                <div class="pl-sm">
-                  <div class="flex justify-between items-start">
-                    <h3 class="font-headline-sm text-xs font-bold text-primary">{{ c.name }}</h3>
-                    <span 
-                      :class="[
-                        c.status === 'AVAILABLE' ? 'bg-green-100 text-green-800' :
-                        c.status === 'BOOKED' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800'
-                      ]" 
-                      class="px-2 py-0.5 rounded text-[8px] font-bold"
-                    >
-                      {{ c.status }}
-                    </span>
-                  </div>
-                  <p class="text-xs text-on-surface-variant mt-1">Sport: {{ c.type }}</p>
-                  <p class="text-xs text-on-surface-variant mt-0.5">{{ c.time }}</p>
-                  <p class="text-[10px] text-outline mt-sm">Next: {{ c.next }}</p>
+                <div>
+                  <p class="font-bold text-xs text-primary">{{ slot.label }}</p>
+                  <p class="text-[10px] text-on-surface-variant mt-0.5">
+                    {{ slot.booked ? 'Booked' : 'Available' }}
+                  </p>
+                </div>
+
+                <div class="mt-sm flex justify-between items-center w-full">
+                  <span v-if="slot.booked" class="text-[9px] text-red-700 truncate max-w-[80px]" :title="'Reserved by ' + slot.bookedBy">
+                    By: {{ slot.bookedBy }}
+                  </span>
+                  
+                  <!-- Select or Notify button -->
+                  <button 
+                    v-if="!slot.booked" 
+                    @click="selectSlot(slot)"
+                    class="text-secondary font-label-bold text-[10px] hover:underline"
+                  >
+                    Select Slot
+                  </button>
+                  <button 
+                    v-else 
+                    @click="notifyCancel(slot)"
+                    class="text-primary font-label-bold text-[10px] hover:underline flex items-center gap-0.5"
+                  >
+                    <span class="material-symbols-outlined text-xs">notifications</span>
+                    {{ isSubscribed(slot) ? 'Subscribed' : 'Notify Me' }}
+                  </button>
                 </div>
               </div>
             </div>
@@ -163,6 +182,8 @@ import { useClubStore } from '../../stores/clubStore'
 const store = useClubStore()
 
 const feedback = ref(null)
+const subscribedSlots = ref([])
+
 const form = reactive({
   courtId: 'badminton-a',
   date: new Date().toISOString().split('T')[0],
@@ -178,6 +199,61 @@ const myBookings = computed(() => {
 const getCourtName = (id) => {
   const court = store.courts.find(c => c.id === id)
   return court ? court.name : id
+}
+
+// Generate hourly slots from 08:00 to 22:00
+const hourlySlots = computed(() => {
+  const slots = [
+    { label: '08:00 - 09:00', start: '08:00', end: '09:00' },
+    { label: '09:00 - 10:00', start: '09:00', end: '10:00' },
+    { label: '10:00 - 11:00', start: '10:00', end: '11:00' },
+    { label: '11:00 - 12:00', start: '11:00', end: '12:00' },
+    { label: '12:00 - 13:00', start: '12:00', end: '13:00' },
+    { label: '13:00 - 14:00', start: '13:00', end: '14:00' },
+    { label: '14:00 - 15:00', start: '14:00', end: '15:00' },
+    { label: '15:00 - 16:00', start: '15:00', end: '16:00' },
+    { label: '16:00 - 17:00', start: '16:00', end: '17:00' },
+    { label: '17:00 - 18:00', start: '17:00', end: '18:00' },
+    { label: '18:00 - 19:00', start: '18:00', end: '19:00' },
+    { label: '19:00 - 20:00', start: '19:00', end: '20:00' },
+    { label: '20:00 - 21:00', start: '20:00', end: '21:00' },
+    { label: '21:00 - 22:00', start: '21:00', end: '22:00' }
+  ]
+
+  // Check bookings for conflicts
+  return slots.map(slot => {
+    const booking = store.bookings.find(b => 
+      b.courtId === form.courtId &&
+      b.date === form.date &&
+      b.status !== 'Declined' &&
+      ((slot.start >= b.startTime && slot.start < b.endTime) ||
+       (slot.end > b.startTime && slot.end <= b.endTime) ||
+       (slot.start <= b.startTime && slot.end >= b.endTime))
+    )
+    return {
+      ...slot,
+      booked: !!booking,
+      bookedBy: booking ? booking.userName : ''
+    }
+  })
+})
+
+const selectSlot = (slot) => {
+  form.startTime = slot.start
+  form.endTime = slot.end
+}
+
+const isSubscribed = (slot) => {
+  const key = `${form.courtId}-${form.date}-${slot.start}`
+  return subscribedSlots.value.includes(key)
+}
+
+const notifyCancel = (slot) => {
+  const key = `${form.courtId}-${form.date}-${slot.start}`
+  if (!subscribedSlots.value.includes(key)) {
+    subscribedSlots.value.push(key)
+    alert(`You will be notified immediately if the ${slot.label} slot for ${getCourtName(form.courtId)} on ${form.date} gets cancelled!`)
+  }
 }
 
 const handleBooking = () => {

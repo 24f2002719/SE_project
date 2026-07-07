@@ -41,12 +41,21 @@
                   <span class="material-symbols-outlined text-xs">schedule</span> {{ s.date }} • {{ s.time }}
                 </p>
               </div>
-              <button 
-                @click="openAttendanceModal(s)"
-                class="bg-primary hover:bg-surface-tint text-on-primary px-4 py-2 rounded font-label-bold text-xs shadow-sm transition-colors"
-              >
-                Mark Attendance
-              </button>
+              <div class="flex flex-col items-end gap-xs">
+                <span 
+                  v-if="isAttendanceLogged(s)"
+                  class="px-2 py-0.5 bg-green-100 text-green-800 text-[10px] font-bold rounded-full flex items-center gap-0.5"
+                >
+                  <span class="material-symbols-outlined text-xs">check_circle</span> Logged
+                </span>
+                <button 
+                  @click="openAttendanceModal(s)"
+                  :class="[isAttendanceLogged(s) ? 'bg-secondary hover:bg-secondary-container' : 'bg-primary hover:bg-surface-tint']"
+                  class="text-on-primary px-4 py-2 rounded font-label-bold text-xs shadow-sm transition-colors"
+                >
+                  {{ isAttendanceLogged(s) ? 'View/Edit Logs' : 'Mark Attendance' }}
+                </button>
+              </div>
             </div>
             <div v-if="coachSessions.length === 0" class="text-center py-md text-xs text-on-surface-variant">
               No upcoming training classes scheduled.
@@ -104,8 +113,9 @@
                       ELIGIBLE
                     </span>
                     <span 
+                      :class="[st.attendanceRate >= 75 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800']"
+                      class="px-2 py-0.5 rounded text-[9px] font-bold"
                       v-else
-                      class="px-2 py-0.5 rounded bg-red-100 text-red-800 text-[9px] font-bold"
                       title="Attendance below 75% selection threshold"
                     >
                       INELIGIBLE
@@ -192,6 +202,10 @@ const studentRoster = computed(() => {
   // Members who have completed onboarding
   return store.users.filter(u => u.role === 'member' && u.onboardingStatus === 'completed')
 })
+
+const isAttendanceLogged = (session) => {
+  return session.members && session.members.some(m => m.present !== null)
+}
 
 const openAttendanceModal = (session) => {
   activeAttendanceModal.value = session

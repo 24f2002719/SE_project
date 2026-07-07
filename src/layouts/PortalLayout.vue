@@ -10,15 +10,18 @@
         </div>
         
         <!-- Profile info block -->
-        <div class="flex items-center gap-sm mt-md p-sm rounded-lg bg-surface-container-highest/40 w-full border border-outline-variant/20">
-          <div class="w-10 h-10 rounded-full bg-surface-variant overflow-hidden flex-shrink-0 flex items-center justify-center border-2 border-surface-container-lowest">
+        <router-link 
+          :to="'/' + (store.currentUser?.role || 'member') + '/profile'"
+          class="flex items-center gap-sm mt-md p-sm rounded-lg bg-surface-container-highest/40 w-full border border-outline-variant/20 hover:bg-surface-variant transition-colors group cursor-pointer"
+        >
+          <div class="w-10 h-10 rounded-full bg-surface-variant overflow-hidden flex-shrink-0 flex items-center justify-center border-2 border-surface-container-lowest group-hover:border-secondary transition-colors">
             <span class="material-symbols-outlined text-primary text-xl">person</span>
           </div>
           <div class="overflow-hidden">
-            <p class="font-label-bold text-label-bold text-on-surface truncate">{{ store.currentUser?.name || 'User Profile' }}</p>
+            <p class="font-label-bold text-label-bold text-on-surface truncate group-hover:text-secondary transition-colors">{{ store.currentUser?.name || 'User Profile' }}</p>
             <p class="font-body-sm text-body-sm text-on-surface-variant truncate capitalize">{{ store.currentUser?.role }} Portal</p>
           </div>
-        </div>
+        </router-link>
       </div>
 
       <!-- Navigation Links -->
@@ -27,11 +30,11 @@
           v-for="link in currentLinks" 
           :key="link.to"
           :to="link.to" 
-          class="flex items-center gap-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-variant transition-all pl-4 group scale-98 hover:scale-100 duration-200"
-          active-class="border-l-4 border-secondary bg-surface-container-high pl-3 font-bold text-primary"
+          class="flex items-center gap-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-variant hover:text-secondary transition-all pl-4 group scale-98 hover:scale-100 duration-200"
+          active-class="border-l-4 border-secondary bg-surface-container-high pl-3 font-bold text-secondary dark:text-secondary"
         >
-          <span class="material-symbols-outlined group-hover:text-primary transition-colors">{{ link.icon }}</span>
-          <span class="font-label-bold text-label-bold text-primary">{{ link.name }}</span>
+          <span class="material-symbols-outlined group-hover:text-secondary transition-colors">{{ link.icon }}</span>
+          <span class="font-label-bold text-label-bold">{{ link.name }}</span>
         </router-link>
       </nav>
 
@@ -91,22 +94,26 @@
             <span class="material-symbols-outlined">close</span>
           </button>
         </div>
-        <div class="px-md py-sm bg-surface-container mb-md border-y border-outline-variant/30 flex items-center gap-2">
+        <router-link 
+          :to="'/' + (store.currentUser?.role || 'member') + '/profile'"
+          class="px-md py-sm bg-surface-container mb-md border-y border-outline-variant/30 flex items-center gap-2 hover:bg-surface-variant transition-colors cursor-pointer w-full"
+          @click="showMobileMenu = false"
+        >
           <div class="w-8 h-8 rounded-full bg-surface-variant flex items-center justify-center font-bold text-primary text-xs">
-            {{ store.currentUser?.name[0] }}
+            {{ store.currentUser?.name ? store.currentUser.name[0] : 'U' }}
           </div>
           <div class="overflow-hidden">
             <p class="font-label-bold text-xs truncate">{{ store.currentUser?.name }}</p>
             <p class="text-[10px] text-on-surface-variant truncate capitalize">{{ store.currentUser?.role }}</p>
           </div>
-        </div>
+        </router-link>
         <nav class="flex-1 px-sm space-y-xs">
           <router-link 
             v-for="link in currentLinks" 
             :key="link.to"
             :to="link.to" 
             class="flex items-center gap-md py-3 rounded-lg text-on-surface-variant pl-4 hover:bg-surface-variant"
-            active-class="bg-surface-container font-bold text-primary border-l-4 border-secondary"
+            active-class="bg-surface-container font-bold text-secondary border-l-4 border-secondary"
             @click="showMobileMenu = false"
           >
             <span class="material-symbols-outlined">{{ link.icon }}</span>
@@ -249,7 +256,8 @@ const linksMap = {
     { name: 'Dashboard', shortName: 'Dash', icon: 'dashboard', to: '/member/dashboard' },
     { name: 'Facility Booking', shortName: 'Book', icon: 'calendar_today', to: '/member/booking' },
     { name: 'My Schedule', shortName: 'Schedule', icon: 'event_note', to: '/member/schedule' },
-    { name: 'Events & Nom', shortName: 'Events', icon: 'sports_soccer', to: '/member/events' },
+    { name: 'Events & Nominations', shortName: 'Events', icon: 'sports_soccer', to: '/member/events' },
+    { name: 'My Attendance', shortName: 'Attendance', icon: 'rule', to: '/member/attendance' },
     { name: 'Payments', shortName: 'Payments', icon: 'payments', to: '/member/payments' },
     { name: 'Onboarding', shortName: 'Setup', icon: 'speed', to: '/member/onboarding' },
     { name: 'Support Center', shortName: 'Support', icon: 'help_outline', to: '/member/support' }
@@ -267,12 +275,20 @@ const linksMap = {
   ],
   faculty: [
     { name: 'Faculty Dashboard', shortName: 'Advisor', icon: 'dashboard', to: '/faculty/dashboard' }
+  ],
+  parent: [
+    { name: 'Parent Dashboard', shortName: 'Dash', icon: 'dashboard', to: '/parent/dashboard' },
+    { name: 'Support', shortName: 'Support', icon: 'help_outline', to: '/parent/support' }
   ]
 }
 
 const currentLinks = computed(() => {
   const role = store.currentUser?.role || 'member'
-  return linksMap[role] || []
+  const links = linksMap[role] || []
+  if (role === 'member' && store.currentUser?.onboardingStatus === 'completed') {
+    return links.filter(l => l.to !== '/member/onboarding')
+  }
+  return links
 })
 
 // Select 3 links for bottom mobile navigation

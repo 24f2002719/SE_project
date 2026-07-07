@@ -3,15 +3,20 @@
     <div class="space-y-gutter">
       <!-- Title -->
       <header class="mb-lg border-b border-outline-variant pb-sm">
-        <h2 class="font-display-lg text-display-lg text-primary">Member Support Center</h2>
-        <p class="font-body-lg text-body-lg text-on-surface-variant mt-sm max-w-3xl">How can we help you today? Browse common questions, chat with our FAQ assistant, or raise a support ticket.</p>
+        <h2 class="font-display-lg text-display-lg text-primary">{{ store.currentUser?.role === 'coach' ? 'Coach Support Center' : 'Member Support Center' }}</h2>
+        <p class="font-body-lg text-body-lg text-on-surface-variant mt-sm max-w-3xl">
+          {{ store.currentUser?.role === 'coach' 
+              ? 'How can we help you today? Browse active support cases or raise a new ticket.' 
+              : 'How can we help you today? Browse common questions, chat with our FAQ assistant, or raise a support ticket.' 
+          }}
+        </p>
       </header>
 
       <!-- Bento Grid Layout -->
       <div class="grid grid-cols-1 md:grid-cols-12 gap-gutter">
         
         <!-- Active Tickets (Left Column, Span 8) -->
-        <section class="md:col-span-8 space-y-gutter">
+        <section :class="[store.currentUser?.role === 'coach' ? 'md:col-span-12' : 'md:col-span-8']" class="space-y-gutter">
           <div class="bg-white border border-outline-variant rounded-xl p-md shadow-sm">
             <div class="flex items-center justify-between mb-md border-b border-outline-variant pb-sm">
               <h3 class="font-headline-sm text-sm font-bold text-primary flex items-center gap-sm">
@@ -64,7 +69,7 @@
         </section>
 
         <!-- Live Chat Assistant (Right Column, Span 4) -->
-        <section class="md:col-span-4 bg-primary text-on-primary rounded-xl p-md shadow-sm relative overflow-hidden flex flex-col justify-between min-h-[300px]">
+        <section v-if="store.currentUser?.role !== 'coach'" class="md:col-span-4 bg-primary text-on-primary rounded-xl p-md shadow-sm relative overflow-hidden flex flex-col justify-between min-h-[300px]">
           <div class="absolute top-0 right-0 w-32 h-32 bg-secondary rounded-full mix-blend-multiply filter blur-2xl opacity-40 translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
           <div>
             <h3 class="font-headline-md text-sm font-bold text-white relative z-10 flex items-center gap-1">
@@ -92,7 +97,7 @@
         </section>
 
         <!-- Raise a Ticket Form (Left Column, Span 6) -->
-        <section class="md:col-span-6 bg-white border border-outline-variant rounded-xl p-md shadow-sm">
+        <section :class="[store.currentUser?.role === 'coach' ? 'md:col-span-12' : 'md:col-span-6']" class="bg-white border border-outline-variant rounded-xl p-md shadow-sm">
           <h3 class="font-headline-md text-sm font-bold text-primary mb-md flex items-center gap-sm border-b border-outline-variant pb-sm">
             <span class="material-symbols-outlined text-secondary">edit_document</span>
             Raise a New Ticket
@@ -128,7 +133,7 @@
         </section>
 
         <!-- FAQ Accordion (Right Column, Span 6) -->
-        <section class="md:col-span-6 bg-white border border-outline-variant rounded-xl p-md shadow-sm">
+        <section v-if="store.currentUser?.role !== 'coach'" class="md:col-span-6 bg-white border border-outline-variant rounded-xl p-md shadow-sm">
           <h3 class="font-headline-md text-sm font-bold text-primary mb-md flex items-center gap-sm border-b border-outline-variant pb-sm">
             <span class="material-symbols-outlined text-secondary">help</span>
             Frequently Asked Questions

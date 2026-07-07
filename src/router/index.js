@@ -13,6 +13,7 @@ import MemberEvents from '../views/member/Events.vue'
 import MemberPayments from '../views/member/Payments.vue'
 import OnboardingWizard from '../views/member/OnboardingWizard.vue'
 import MemberSupport from '../views/member/Support.vue'
+import MemberAttendance from '../views/member/Attendance.vue'
 
 // Coach Views
 import CoachDashboard from '../views/coach/CoachDashboard.vue'
@@ -27,6 +28,12 @@ import SupportTickets from '../views/admin/SupportTickets.vue'
 // Faculty Views
 import FacultyDashboard from '../views/faculty/FacultyDashboard.vue'
 
+// Parent Views
+import ParentsDashboard from '../views/parent/ParentsDashboard.vue'
+
+// Shared Views
+import ProfileView from '../views/ProfileView.vue'
+
 const routes = [
   { path: '/', name: 'home', component: HomeView },
   { path: '/login', name: 'login', component: LoginView },
@@ -40,20 +47,30 @@ const routes = [
   { path: '/member/payments', name: 'member-payments', component: MemberPayments, meta: { role: 'member' } },
   { path: '/member/onboarding', name: 'member-onboarding', component: OnboardingWizard, meta: { role: 'member' } },
   { path: '/member/support', name: 'member-support', component: MemberSupport, meta: { role: 'member' } },
+  { path: '/member/attendance', name: 'member-attendance', component: MemberAttendance, meta: { role: 'member' } },
+  { path: '/member/profile', name: 'member-profile', component: ProfileView, meta: { role: 'member' } },
 
   // Coach Routes
   { path: '/coach/dashboard', name: 'coach-dashboard', component: CoachDashboard, meta: { role: 'coach' } },
   { path: '/coach/schedule', name: 'coach-schedule', component: CoachSchedule, meta: { role: 'coach' } },
   { path: '/coach/attendance', name: 'coach-attendance', component: AttendanceAnalytics, meta: { role: 'coach' } },
-  { path: '/coach/support', name: 'coach-support', component: MemberSupport, meta: { role: 'coach' } }, // Reusing support view
+  { path: '/coach/support', name: 'coach-support', component: MemberSupport, meta: { role: 'coach' } },
+  { path: '/coach/profile', name: 'coach-profile', component: ProfileView, meta: { role: 'coach' } },
 
   // Admin Routes
   { path: '/admin/dashboard', name: 'admin-dashboard', component: AdminDashboard, meta: { role: 'admin' } },
   { path: '/admin/facilities', name: 'admin-facilities', component: FacilityManagement, meta: { role: 'admin' } },
   { path: '/admin/support', name: 'admin-support', component: SupportTickets, meta: { role: 'admin' } },
+  { path: '/admin/profile', name: 'admin-profile', component: ProfileView, meta: { role: 'admin' } },
 
   // Faculty Routes
-  { path: '/faculty/dashboard', name: 'faculty-dashboard', component: FacultyDashboard, meta: { role: 'faculty' } }
+  { path: '/faculty/dashboard', name: 'faculty-dashboard', component: FacultyDashboard, meta: { role: 'faculty' } },
+  { path: '/faculty/profile', name: 'faculty-profile', component: ProfileView, meta: { role: 'faculty' } },
+
+  // Parent Routes
+  { path: '/parent/dashboard', name: 'parent-dashboard', component: ParentsDashboard, meta: { role: 'parent' } },
+  { path: '/parent/support', name: 'parent-support', component: MemberSupport, meta: { role: 'parent' } },
+  { path: '/parent/profile', name: 'parent-profile', component: ProfileView, meta: { role: 'parent' } }
 ]
 
 const router = createRouter({
@@ -84,7 +101,8 @@ router.beforeEach((to, from, next) => {
         member: '/member/dashboard',
         coach: '/coach/dashboard',
         admin: '/admin/dashboard',
-        faculty: '/faculty/dashboard'
+        faculty: '/faculty/dashboard',
+        parent: '/parent/dashboard'
       }
       return next(dashboardMap[store.currentUser.role] || '/')
     }
@@ -96,7 +114,8 @@ router.beforeEach((to, from, next) => {
       member: '/member/dashboard',
       coach: '/coach/dashboard',
       admin: '/admin/dashboard',
-      faculty: '/faculty/dashboard'
+      faculty: '/faculty/dashboard',
+      parent: '/parent/dashboard'
     }
     return next(dashboardMap[store.currentUser.role])
   }

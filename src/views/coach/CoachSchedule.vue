@@ -15,7 +15,7 @@
         <div class="lg:col-span-4 bg-white border border-outline-variant rounded-xl p-md shadow-sm h-fit">
           <h2 class="font-headline-sm text-sm font-bold text-primary mb-md border-b border-outline-variant pb-sm flex items-center gap-xs">
             <span class="material-symbols-outlined text-secondary">calendar_today</span>
-            Class Scheduler
+            {{ editingSession ? 'Edit Training Session' : 'Class Scheduler' }}
           </h2>
 
           <div v-if="feedback" class="bg-green-50 border border-green-200 text-green-800 p-sm rounded-lg text-xs font-semibold mb-md">
@@ -61,7 +61,15 @@
               type="submit" 
               class="w-full bg-primary hover:bg-surface-tint text-on-primary font-label-bold text-label-bold py-3 rounded transition-colors shadow-sm mt-md"
             >
-              Schedule Session
+              {{ editingSession ? 'Update Session' : 'Schedule Session' }}
+            </button>
+            <button 
+              v-if="editingSession"
+              type="button"
+              @click="cancelEdit"
+              class="w-full border border-outline-variant hover:bg-slate-50 text-on-surface-variant font-label-bold text-label-bold py-2.5 rounded transition-colors shadow-sm mt-2"
+            >
+              Cancel Edit
             </button>
           </form>
         </div>
@@ -83,9 +91,22 @@
                 <p class="text-xs text-on-surface-variant mt-1">Sport: {{ s.sport }} • Location: {{ s.facility }}</p>
                 <p class="text-xs text-on-surface-variant mt-0.5">Time: {{ s.date }} @ {{ s.time }}</p>
               </div>
-              <span class="px-2 py-1 bg-primary-container text-on-primary-container text-[10px] font-bold rounded">
-                Active Session
-              </span>
+              <div class="flex items-center gap-xs">
+                <button 
+                  @click="startEdit(s)"
+                  class="p-1.5 text-secondary hover:bg-orange-50 rounded transition-colors flex items-center justify-center"
+                  title="Edit Session"
+                >
+                  <span class="material-symbols-outlined text-[20px]">edit</span>
+                </button>
+                <button 
+                  @click="handleDelete(s.id)"
+                  class="p-1.5 text-error hover:bg-red-50 rounded transition-colors flex items-center justify-center"
+                  title="Remove Session"
+                >
+                  <span class="material-symbols-outlined text-[20px]">delete</span>
+                </button>
+              </div>
             </div>
             
             <div v-if="myScheduledSessions.length === 0" class="text-center py-xl text-sm text-on-surface-variant">
@@ -107,6 +128,8 @@ import { useClubStore } from '../../stores/clubStore'
 const store = useClubStore()
 
 const feedback = ref('')
+const editingSession = ref(null)
+
 const form = reactive({
   title: '',
   sport: 'Badminton',
@@ -120,19 +143,60 @@ const myScheduledSessions = computed(() => {
   return store.attendance.filter(s => s.coach === store.currentUser.name)
 })
 
+const startEdit = (session) => {
+  editingSession.value = session
+  form.title = session.title
+  form.sport = session.sport
+  form.facility = session.facility
+  form.date = session.date
+  form.time = session.time
+}
+
+const cancelEdit = () => {
+  editingSession.value = null
+  form.title = ''
+  form.sport = 'Badminton'
+  form.facility = 'Badminton Court A'
+  form.date = new Date().toISOString().split('T')[0]
+  form.time = '18:00 - 19:30'
+}
+
+const handleDelete = (id) => {
+  if (confirm('Are you sure you want to remove this coaching session?')) {
+    store.deleteSession(id)
+    feedback.value = 'Coaching session removed successfully.'
+    setTimeout(() => { feedback.value = '' }, 4000)
+    if (editingSession.value && editingSession.value.id === id) {
+      cancelEdit()
+    }
+  }
+}
+
 const handleSubmit = () => {
   if (!store.currentUser) return
-  store.createSession(
-    store.currentUser.name,
-    form.sport,
-    form.date,
-    form.time,
-    form.title,
-    form.facility
-  )
-  
-  feedback.value = 'Coaching session scheduled successfully!'
-  form.title = ''
+  if (editingSession.value) {
+    store.updateSession(
+      editingSession.value.id,
+      form.sport,
+      form.date,
+      form.time,
+      form.title,
+      form.facility
+    )
+    feedback.value = 'Coaching session updated successfully!'
+    cancelEdit()
+  } else {
+    store.createSession(
+      store.currentUser.name,
+      form.sport,
+      form.date,
+      form.time,
+      form.title,
+      form.facility
+    )
+    feedback.value = 'Coaching session scheduled successfully!'
+    form.title = ''
+  }
   setTimeout(() => { feedback.value = '' }, 4000)
 }
 </script>

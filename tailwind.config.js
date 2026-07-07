@@ -76,11 +76,11 @@ export default {
       },
       fontFamily: {
         "body-lg": ["Lexend", "sans-serif"],
-        "display-lg-mobile": ["Montserrat", "sans-serif"],
+        "display-lg-mobile": ["Plus Jakarta Sans", "sans-serif"],
         "body-md": ["Lexend", "sans-serif"],
-        "headline-sm": ["Montserrat", "sans-serif"],
-        "headline-md": ["Montserrat", "sans-serif"],
-        "display-lg": ["Montserrat", "sans-serif"],
+        "headline-sm": ["Plus Jakarta Sans", "sans-serif"],
+        "headline-md": ["Plus Jakarta Sans", "sans-serif"],
+        "display-lg": ["Plus Jakarta Sans", "sans-serif"],
         "body-sm": ["Lexend", "sans-serif"],
         "label-bold": ["Lexend", "sans-serif"]
       },

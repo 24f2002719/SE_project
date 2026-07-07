@@ -139,7 +139,7 @@
             >
               <div class="absolute left-0 top-0 bottom-0 w-1 bg-secondary-container"></div>
               <div class="bg-slate-200 rounded p-2 text-center min-w-[56px] text-xs font-semibold">
-                <span class="block text-primary uppercase text-[9px]">DATE</span>
+                <span class="block text-primary uppercase text-[9px]">{{ formatMonth(e.date) }}</span>
                 <span class="block text-primary text-sm font-bold">{{ e.date.split('-')[2] }}</span>
               </div>
               <div class="flex-grow text-xs">
@@ -233,6 +233,15 @@ import PortalLayout from '../../layouts/PortalLayout.vue'
 import { useClubStore } from '../../stores/clubStore'
 
 const store = useClubStore()
+
+const formatMonth = (dateStr) => {
+  if (!dateStr) return 'DATE'
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+  const parts = dateStr.split('-')
+  if (parts.length < 2) return 'DATE'
+  const monthIdx = parseInt(parts[1], 10) - 1
+  return months[monthIdx] || 'DATE'
+}
 
 const showBroadcastModal = ref(false)
 const broadcastForm = reactive({

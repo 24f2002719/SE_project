@@ -95,42 +95,66 @@
 
         <!-- Equipment Inventory Registry (Span 4) -->
         <div class="lg:col-span-4 bg-white border border-outline-variant rounded-xl p-md shadow-sm flex flex-col justify-between">
-          <div>
+          <div class="flex flex-col h-full justify-between">
             <div class="flex justify-between items-center mb-md border-b border-outline-variant pb-sm">
-              <h3 class="font-headline-sm text-sm font-bold text-primary flex items-center gap-1">
+              <h3 class="font-headline-sm text-sm font-bold text-primary flex items-center gap-2">
                 <span class="material-symbols-outlined text-secondary">fitness_center</span>
                 Equipment Registry Log
               </h3>
             </div>
             
-            <div class="space-y-sm max-h-[300px] overflow-y-auto text-xs">
+            <div class="space-y-sm max-h-[400px] overflow-y-auto text-xs pr-1">
               <div 
                 v-for="eq in store.equipment" 
                 :key="eq.id"
-                class="p-sm border border-outline-variant rounded-lg bg-slate-50/50 space-y-1"
+                class="p-sm border border-outline-variant rounded-lg bg-slate-50/30 hover:bg-slate-50 hover:shadow-sm transition-all space-y-2"
               >
-                <div class="flex justify-between">
-                  <span class="font-semibold text-primary">{{ eq.name }}</span>
+                <div class="flex justify-between items-start">
+                  <div>
+                    <span class="px-1.5 py-0.5 rounded bg-slate-100 text-slate-800 text-[8px] font-mono font-bold">{{ eq.id }}</span>
+                    <h4 class="font-bold text-primary text-xs mt-1">{{ eq.name }}</h4>
+                  </div>
                   <span 
-                    :class="[eq.status === 'Active' ? 'text-green-700 font-semibold' : eq.status === 'Damaged' ? 'text-error font-semibold' : 'text-yellow-700 font-semibold']"
+                    :class="[
+                      eq.status === 'Active' ? 'bg-green-50 text-green-700 border-green-200' : 
+                      eq.status === 'Damaged' ? 'bg-red-50 text-error border-red-200' : 'bg-yellow-50 text-yellow-700 border-yellow-200'
+                    ]"
+                    class="px-2.5 py-0.5 rounded-full border text-[9px] font-bold"
                   >
                     {{ eq.status }}
                   </span>
                 </div>
-                <p class="text-[10px] text-on-surface-variant leading-normal">Usage: {{ eq.usage }} • Notes: {{ eq.notes }}</p>
-                <div class="flex gap-1 pt-1 justify-end">
+                
+                <div class="space-y-1 text-[10px] text-on-surface-variant">
+                  <p class="flex items-center gap-1">
+                    <span class="material-symbols-outlined text-xs">speed</span>
+                    <span>Usage Load: <span class="font-semibold text-primary">{{ eq.usage }}</span></span>
+                  </p>
+                  <p class="flex items-center gap-1">
+                    <span class="material-symbols-outlined text-xs">calendar_today</span>
+                    <span>Last Checked: {{ eq.lastCheck }}</span>
+                  </p>
+                  <p v-if="eq.notes" class="flex items-start gap-1 p-1 bg-slate-100/50 rounded mt-1 italic text-slate-600">
+                    <span class="material-symbols-outlined text-[10px] mt-0.5">sticky_note_2</span>
+                    <span>{{ eq.notes }}</span>
+                  </p>
+                </div>
+
+                <div class="flex gap-2 pt-1 border-t border-outline-variant/30 justify-end">
                   <button 
                     v-if="eq.status === 'Active'" 
                     @click="reportDamage(eq.id)"
-                    class="px-2 py-0.5 border border-red-200 text-error bg-red-50 hover:bg-red-100 rounded text-[9px] font-bold"
+                    class="px-3 py-1 border border-red-200 text-error hover:bg-error hover:text-white rounded text-[10px] font-bold transition-all flex items-center gap-0.5"
                   >
-                    Report Damaged
+                    <span class="material-symbols-outlined text-xs">report_problem</span>
+                    Report Damage
                   </button>
                   <button 
                     v-else 
                     @click="orderRestock(eq.id)"
-                    class="px-2 py-0.5 border border-green-200 text-green-700 bg-green-50 hover:bg-green-100 rounded text-[9px] font-bold"
+                    class="px-3 py-1 bg-green-700 text-white hover:bg-green-800 rounded text-[10px] font-bold transition-all flex items-center gap-0.5"
                   >
+                    <span class="material-symbols-outlined text-xs">check_circle</span>
                     Settle / Restock
                   </button>
                 </div>
