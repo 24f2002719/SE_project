@@ -2,12 +2,20 @@
   <PortalLayout>
     <div class="space-y-gutter">
       <!-- Welcome Header -->
-      <header class="flex justify-between items-end border-b border-outline-variant pb-sm">
+      <header class="flex flex-col md:flex-row md:items-end justify-between border-b border-outline-variant pb-sm gap-md">
         <div>
           <h1 class="font-display-lg text-display-lg font-bold text-primary tracking-tight">
             Coach Dashboard
           </h1>
           <p class="font-body-lg text-body-lg text-on-surface-variant mt-2">Manage your training rosters and session attendance logs.</p>
+        </div>
+        <div class="flex items-center gap-sm bg-white border border-outline-variant px-sm py-2 rounded-xl shadow-sm self-start md:self-end">
+          <span class="material-symbols-outlined text-secondary">sports</span>
+          <div class="text-xs">
+            <p class="text-on-surface-variant font-semibold">Active Sport Coaching</p>
+            <p class="font-bold text-primary capitalize">{{ store.currentUser?.coachingSport || 'Not Assigned' }}</p>
+          </div>
+          <router-link to="/coach/profile" class="text-xs text-secondary font-label-bold hover:underline border-l border-outline-variant/30 pl-sm ml-xs">Change</router-link>
         </div>
       </header>
 

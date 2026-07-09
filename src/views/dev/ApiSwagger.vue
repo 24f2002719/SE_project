@@ -108,25 +108,25 @@ const swaggerData = [
         description: 'Verifies email/phone and password, returning user data and simulated JWT access token for gateway headers.',
         request: {
           headers: { 'Content-Type': 'application/json' },
-          body: { email: 'alex@iiserb.ac.in', password: 'password123' }
+          body: { email: 'alex@nexsport.com', password: 'password123' }
         },
         response: {
           token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
-          user: { name: 'Alex Mercer', email: 'alex@iiserb.ac.in', role: 'member', tier: 'Pro', onboardingStatus: 'completed' }
+          user: { name: 'Alex Mercer', email: 'alex@nexsport.com', role: 'member', tier: 'Pro', onboardingStatus: 'completed' }
         }
       },
       {
         method: 'POST',
         path: '/api/auth/register',
-        summary: 'Register a new account (IISER Validation)',
-        description: 'Creates a member or coach profile. Enforces validation checking that email ends with @iiserb.ac.in.',
+        summary: 'Register a new account (General Validation)',
+        description: 'Creates a member or coach profile. Enforces general format validation for the email address.',
         request: {
           headers: { 'Content-Type': 'application/json' },
-          body: { name: 'John Smith', email: 'john@iiserb.ac.in', password: 'password123', role: 'member' }
+          body: { name: 'John Smith', email: 'john@nexsport.com', password: 'password123', role: 'member' }
         },
         response: {
           message: 'Account successfully registered.',
-          user: { email: 'john@iiserb.ac.in', role: 'member', onboardingStatus: 'pending' }
+          user: { email: 'john@nexsport.com', role: 'member', onboardingStatus: 'pending' }
         }
       }
     ]
@@ -207,7 +207,7 @@ const swaggerData = [
         description: 'Submit present/absent logs for a training class session. Recalculates student attendance rates in the background.',
         request: {
           headers: { 'Authorization': 'Bearer <token>', 'Content-Type': 'application/json' },
-          body: { sessionId: 101, memberEmail: 'alex@iiserb.ac.in', present: true }
+          body: { sessionId: 101, memberEmail: 'alex@nexsport.com', present: true }
         },
         response: { success: true, updatedAttendanceRate: 85 }
       }

@@ -91,6 +91,15 @@
                   <label class="font-label-bold text-on-surface-variant text-xs">Date of Birth</label>
                   <input v-model="form.dob" type="date" class="w-full bg-white border border-outline-variant rounded-md px-4 py-2.5 font-body-md input-glow transition-all" />
                 </div>
+                <div class="space-y-1 pt-xs">
+                  <label class="font-label-bold text-on-surface-variant text-xs">Clubs You Want to Join</label>
+                  <div class="grid grid-cols-2 md:grid-cols-3 gap-sm text-xs mt-1">
+                    <label v-for="club in ['Badminton', 'Volleyball', 'Tennis', 'Swimming', 'Athletics']" :key="club" class="flex items-center gap-2 p-2 border border-outline-variant rounded-lg bg-slate-50/50 hover:bg-slate-50 cursor-pointer">
+                      <input type="checkbox" v-model="form.clubs" :value="club" class="h-4.5 w-4.5 rounded border-outline-variant text-primary" />
+                      <span>{{ club }} Club</span>
+                    </label>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -172,8 +181,8 @@
             <!-- Step 4: Waiver Signature -->
             <div v-if="step === 4" class="space-y-md">
               <div>
-                <h2 class="font-headline-sm text-primary mb-xs">Liability Release &amp; Waiver</h2>
-                <p class="font-body-sm text-on-surface-variant">Sign the digital release of liability form to complete your registry.</p>
+                <h2 class="font-headline-sm text-primary mb-xs">Disclaimer &amp; Waiver</h2>
+                <p class="font-body-sm text-on-surface-variant">Sign the digital disclaimer and waiver form to complete your registry.</p>
               </div>
               <div class="bg-slate-50 p-sm rounded-lg border border-outline-variant/30 text-xs leading-relaxed max-h-40 overflow-y-auto">
                 <p class="font-semibold text-primary">NexSport Liability Release Form:</p>
@@ -261,7 +270,7 @@ const router = useRouter()
 const store = useClubStore()
 
 const step = ref(1)
-const stepNames = ['Details', 'Plan', 'Safety', 'Liability Release', 'Tour']
+const stepNames = ['Details', 'Plan', 'Safety', 'Disclaimer', 'Tour']
 const validationError = ref('')
 
 const form = reactive({
@@ -271,6 +280,7 @@ const form = reactive({
   dob: '',
   email: '',
   tier: 'Pro',
+  clubs: [],
   safetySigned: false,
   waiverSignature: '',
   tourCompleted: false
@@ -283,6 +293,7 @@ onMounted(() => {
     const names = store.currentUser.name.split(' ')
     form.firstName = names[0] || ''
     form.lastName = names[1] || ''
+    form.clubs = store.currentUser.clubs || []
     
     // Redirect if already completed
     if (store.currentUser.onboardingStatus === 'completed') {

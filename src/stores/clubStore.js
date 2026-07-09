@@ -6,12 +6,12 @@ export const useClubStore = defineStore('club', {
     
     // Accounts list
     users: [
-      { name: 'Alex Mercer', email: 'alex@iiserb.ac.in', password: 'password123', role: 'member', tier: 'Pro', onboardingStatus: 'pending', membershipStatus: 'Active', membershipDue: 0, attendanceRate: 85 },
-      { name: 'Deepanshi Aggarwal', email: 'deepanshi@iiserb.ac.in', password: 'password123', role: 'coach' },
-      { name: 'Sarah Miller', email: 'sarah@iiserb.ac.in', password: 'password123', role: 'coach' },
-      { name: 'Krishna Agarwal', email: 'krishna@iiserb.ac.in', password: 'password123', role: 'admin' },
-      { name: 'Dr. Verma', email: 'verma@iiserb.ac.in', password: 'password123', role: 'faculty' },
-      { name: 'Mr. Mercer (Parent)', email: 'parent@iiserb.ac.in', password: 'password123', role: 'parent', childEmail: 'alex@iiserb.ac.in' }
+      { name: 'Alex Mercer', email: 'alex@nexsport.com', password: 'password123', role: 'member', tier: 'Pro', onboardingStatus: 'pending', membershipStatus: 'Active', membershipDue: 0, attendanceRate: 85, clubs: ['Badminton', 'Tennis'] },
+      { name: 'Deepanshi Aggarwal', email: 'deepanshi@nexsport.com', password: 'password123', role: 'coach', coachingSport: 'Badminton' },
+      { name: 'Sarah Miller', email: 'sarah@nexsport.com', password: 'password123', role: 'coach', coachingSport: 'Volleyball' },
+      { name: 'Krishna Agarwal', email: 'krishna@nexsport.com', password: 'password123', role: 'admin' },
+      { name: 'Dr. Verma', email: 'verma@nexsport.com', password: 'password123', role: 'faculty' },
+      { name: 'Mr. Mercer (Parent)', email: 'parent@nexsport.com', password: 'password123', role: 'parent', childEmail: 'alex@nexsport.com' }
     ],
 
     // Facilities Catalog
@@ -26,8 +26,8 @@ export const useClubStore = defineStore('club', {
 
     // Active Court Bookings
     bookings: [
-      { id: 'BK-1001', courtId: 'badminton-b', userEmail: 'alex@iiserb.ac.in', userName: 'Alex Mercer', date: '2026-07-04', startTime: '13:00', endTime: '15:00', status: 'Approved' },
-      { id: 'BK-1002', courtId: 'tennis-1', userEmail: 'john@iiserb.ac.in', userName: 'John Doe', date: '2026-07-04', startTime: '14:00', endTime: '15:30', status: 'Approved' }
+      { id: 'BK-1001', courtId: 'badminton-b', userEmail: 'alex@nexsport.com', userName: 'Alex Mercer', date: '2026-07-04', startTime: '13:00', endTime: '15:00', status: 'Approved' },
+      { id: 'BK-1002', courtId: 'tennis-1', userEmail: 'john@nexsport.com', userName: 'John Doe', date: '2026-07-04', startTime: '14:00', endTime: '15:30', status: 'Approved' }
     ],
 
     // Member Onboarding wizard data
@@ -48,20 +48,20 @@ export const useClubStore = defineStore('club', {
 
     // Transaction histories
     payments: [
-      { id: 'TXN-901', userEmail: 'alex@iiserb.ac.in', date: '2025-10-15', desc: 'Pro Tier Annual Renewal', amount: 1200.00, status: 'Paid', receiptId: 'REC-10294' },
-      { id: 'TXN-902', userEmail: 'alex@iiserb.ac.in', date: '2025-09-02', desc: 'Tennis Court Booking (Indoor)', amount: 45.00, status: 'Paid', receiptId: 'REC-10243' },
-      { id: 'TXN-903', userEmail: 'alex@iiserb.ac.in', date: '2025-08-18', desc: 'Summer League Registration', amount: 150.00, status: 'Paid', receiptId: 'REC-09823' }
+      { id: 'TXN-901', userEmail: 'alex@nexsport.com', date: '2025-10-15', desc: 'Pro Tier Annual Renewal', amount: 1200.00, status: 'Paid', receiptId: 'REC-10294' },
+      { id: 'TXN-902', userEmail: 'alex@nexsport.com', date: '2025-09-02', desc: 'Tennis Court Booking (Indoor)', amount: 45.00, status: 'Paid', receiptId: 'REC-10243' },
+      { id: 'TXN-903', userEmail: 'alex@nexsport.com', date: '2025-08-18', desc: 'Summer League Registration', amount: 150.00, status: 'Paid', receiptId: 'REC-09823' }
     ],
 
     // Tournaments & League events
     events: [
       { id: 1, name: 'Winter Classic Tennis', sport: 'Tennis', format: 'Knockout', date: '2026-11-12', venue: 'Tennis Center 1', registered: 5, max: 8, status: 'Active', deadline: '2026-11-05', 
         roster: [
-          { name: 'Alex Mercer', email: 'alex@iiserb.ac.in', attendanceRate: 85, status: 'Approved' },
-          { name: 'John Doe', email: 'john@iiserb.ac.in', attendanceRate: 78, status: 'Approved' },
-          { name: 'Michael Park', email: 'michael@iiserb.ac.in', attendanceRate: 92, status: 'Approved' },
-          { name: 'Sara Connor', email: 'sara@iiserb.ac.in', attendanceRate: 95, status: 'Approved' },
-          { name: 'David Lee', email: 'david@iiserb.ac.in', attendanceRate: 72, status: 'Pending Approval' } // attendance below 75%
+          { name: 'Alex Mercer', email: 'alex@nexsport.com', attendanceRate: 85, status: 'Approved' },
+          { name: 'John Doe', email: 'john@nexsport.com', attendanceRate: 78, status: 'Approved' },
+          { name: 'Michael Park', email: 'michael@nexsport.com', attendanceRate: 92, status: 'Approved' },
+          { name: 'Sara Connor', email: 'sara@nexsport.com', attendanceRate: 95, status: 'Approved' },
+          { name: 'David Lee', email: 'david@nexsport.com', attendanceRate: 72, status: 'Pending Approval' } // attendance below 75%
         ],
         fixtures: [
           { round: 'Semifinals', match: 'Match 1', player1: 'Alex Mercer', player2: 'John Doe', winner: '' },
@@ -70,7 +70,7 @@ export const useClubStore = defineStore('club', {
       },
       { id: 2, name: 'Youth Swim Meet', sport: 'Swimming', format: 'Round-robin', date: '2026-12-05', venue: 'Aquatics Complex', registered: 4, max: 8, status: 'Active', deadline: '2026-11-30', 
         roster: [
-          { name: 'Emma Wilson', email: 'emma@iiserb.ac.in', attendanceRate: 64, status: 'Pending Approval' }
+          { name: 'Emma Wilson', email: 'emma@nexsport.com', attendanceRate: 64, status: 'Pending Approval' }
         ],
         fixtures: [] 
       },
@@ -79,10 +79,10 @@ export const useClubStore = defineStore('club', {
 
     // Support/Grievance Tickets
     tickets: [
-      { id: 'TK-8492', category: 'Facility Issue', subject: 'Court 3 Lighting Issue', date: '2026-07-04', user: 'Alex Mercer', userEmail: 'alex@iiserb.ac.in', status: 'In Progress', messages: [
+      { id: 'TK-8492', category: 'Facility Issue', subject: 'Court 3 Lighting Issue', date: '2026-07-04', user: 'Alex Mercer', userEmail: 'alex@nexsport.com', status: 'In Progress', messages: [
         { sender: 'Alex Mercer', text: 'Three bulbs on Court A are flickering heavily.', time: '2 hours ago' }
       ] },
-      { id: 'TK-8488', category: 'Billing & Memberships', subject: 'Double Billing Inquiry', date: '2026-07-02', user: 'Alex Mercer', userEmail: 'alex@iiserb.ac.in', status: 'Escalated to Admin', messages: [
+      { id: 'TK-8488', category: 'Billing & Memberships', subject: 'Double Billing Inquiry', date: '2026-07-02', user: 'Alex Mercer', userEmail: 'alex@nexsport.com', status: 'Escalated to Admin', messages: [
         { sender: 'Alex Mercer', text: 'I was charged twice for the renewal fee.', time: '2 days ago' }
       ] }
     ],
@@ -102,24 +102,26 @@ export const useClubStore = defineStore('club', {
     // Coach schedules & attendance rosters
     attendance: [
       { id: 101, sport: 'Badminton', coach: 'Deepanshi Aggarwal', date: '2026-07-04', time: '18:00 - 19:30', title: 'Advanced Badminton Drills', facility: 'Badminton Court A', members: [
-        { name: 'Alex Mercer', email: 'alex@iiserb.ac.in', present: true, attendanceRate: 85 },
-        { name: 'John Doe', email: 'john@iiserb.ac.in', present: null, attendanceRate: 78 },
-        { name: 'Emma Wilson', email: 'emma@iiserb.ac.in', present: null, attendanceRate: 64 }, // Low attendance
-        { name: 'Michael Park', email: 'michael@iiserb.ac.in', present: null, attendanceRate: 92 }
+        { name: 'Alex Mercer', email: 'alex@nexsport.com', present: true, attendanceRate: 85 },
+        { name: 'John Doe', email: 'john@nexsport.com', present: null, attendanceRate: 78 },
+        { name: 'Emma Wilson', email: 'emma@nexsport.com', present: null, attendanceRate: 64 }, // Low attendance
+        { name: 'Michael Park', email: 'michael@nexsport.com', present: null, attendanceRate: 92 }
       ]},
       { id: 102, sport: 'Volleyball', coach: 'Sarah Miller', date: '2026-07-05', time: '10:00 - 12:00', title: 'Social Volleyball Match', facility: 'Volleyball Practice', members: [
-        { name: 'Alex Mercer', email: 'alex@iiserb.ac.in', present: null, attendanceRate: 85 },
-        { name: 'David Lee', email: 'david@iiserb.ac.in', present: null, attendanceRate: 72 }, // Low attendance
-        { name: 'Sara Connor', email: 'sara@iiserb.ac.in', present: null, attendanceRate: 95 }
+        { name: 'Alex Mercer', email: 'alex@nexsport.com', present: null, attendanceRate: 85 },
+        { name: 'David Lee', email: 'david@nexsport.com', present: null, attendanceRate: 72 }, // Low attendance
+        { name: 'Sara Connor', email: 'sara@nexsport.com', present: null, attendanceRate: 95 }
       ]}
     ],
 
     // Gym equipment usage registry
     equipment: [
-      { id: 'EQ-001', name: 'Treadmill #3', status: 'Active', usage: 'High', lastCheck: '2026-06-30', notes: 'Running smoothly' },
-      { id: 'EQ-002', name: 'Badminton Nets - Court B', status: 'Damaged', usage: 'Needs Restring', lastCheck: '2026-07-01', notes: 'Torn mesh' },
-      { id: 'EQ-003', name: 'Dumbbell Rack 10-30kg', status: 'Active', usage: 'Normal', lastCheck: '2026-06-25', notes: 'All weights accounted for' },
-      { id: 'EQ-004', name: 'Volleyball Post Tensioner', status: 'Pending Restock', usage: 'Broken', lastCheck: '2026-07-03', notes: 'Replacement post tensioner ordered' }
+      { id: 'EQ-001', name: 'Badminton Net A', status: 'Active', usage: 'Normal', lastCheck: '2026-06-30', notes: 'Running smoothly', facilityId: 'badminton-a' },
+      { id: 'EQ-002', name: 'Badminton Net B', status: 'Damaged', usage: 'Needs Restring', lastCheck: '2026-07-01', notes: 'Torn mesh', facilityId: 'badminton-b' },
+      { id: 'EQ-003', name: 'Volleyball Practice Net', status: 'Active', usage: 'Normal', lastCheck: '2026-06-25', notes: 'Perfect tension', facilityId: 'volleyball-practice' },
+      { id: 'EQ-004', name: 'Volleyball Post Tensioner', status: 'Pending Restock', usage: 'Broken', lastCheck: '2026-07-03', notes: 'Replacement ordered', facilityId: 'volleyball-main' },
+      { id: 'EQ-005', name: 'Tennis Court 1 Netting', status: 'Active', usage: 'High', lastCheck: '2026-06-28', notes: 'Perfect condition', facilityId: 'tennis-1' },
+      { id: 'EQ-006', name: 'Tennis Ball Basket', status: 'Active', usage: 'Normal', lastCheck: '2026-07-02', notes: 'All balls accounted for', facilityId: 'tennis-2' }
     ]
   }),
 
@@ -137,15 +139,31 @@ export const useClubStore = defineStore('club', {
       return { success: false, message: 'Invalid email or password.' }
     },
     
-    register(name, email, password, role = 'member') {
-      // Validate IISER Bhopal email domain
-      if (!email.toLowerCase().endsWith('@iiserb.ac.in')) {
-        return { success: false, message: 'Signup is restricted to IISER Bhopal users (@iiserb.ac.in).' }
+    register(name, email, password, role = 'member', childEmail = '', clubs = [], coachingSport = '') {
+      // Validate email format generally
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        return { success: false, message: 'Please enter a valid email address.' }
       }
       // Check existing user
       if (this.users.some(u => u.email.toLowerCase() === email.toLowerCase())) {
         return { success: false, message: 'Email is already registered.' }
       }
+
+      // Parent validation and link checking
+      if (role === 'parent') {
+        if (!childEmail) {
+          return { success: false, message: 'Child email is required for parent registration.' }
+        }
+        if (!emailRegex.test(childEmail)) {
+          return { success: false, message: 'Please enter a valid child email address.' }
+        }
+        const studentExists = this.users.some(u => u.email.toLowerCase() === childEmail.toLowerCase() && u.role === 'member')
+        if (!studentExists) {
+          return { success: false, message: `No registered student-athlete found with email: ${childEmail}` }
+        }
+      }
+
       const newUser = {
         name,
         email,
@@ -155,7 +173,10 @@ export const useClubStore = defineStore('club', {
         onboardingStatus: role === 'member' ? 'pending' : null,
         membershipStatus: role === 'member' ? 'Active' : null,
         membershipDue: role === 'member' ? 1200 : 0,
-        attendanceRate: 100
+        attendanceRate: 100,
+        clubs: role === 'member' ? (clubs || []) : null,
+        coachingSport: role === 'coach' ? (coachingSport || '') : null,
+        ...(role === 'parent' && { childEmail })
       }
       this.users.push(newUser)
       return { success: true, user: newUser }
@@ -297,6 +318,9 @@ export const useClubStore = defineStore('club', {
         user.membershipStatus = 'Active'
         user.tier = onboardingData.tier
         user.membershipDue = onboardingData.tier === 'Pro' ? 1200 : 600
+        if (onboardingData.clubs) {
+          user.clubs = onboardingData.clubs || []
+        }
         
         // Update Session details if current user
         if (this.currentUser && this.currentUser.email === userEmail) {
@@ -304,6 +328,9 @@ export const useClubStore = defineStore('club', {
           this.currentUser.membershipStatus = 'Active'
           this.currentUser.tier = onboardingData.tier
           this.currentUser.membershipDue = user.membershipDue
+          if (onboardingData.clubs) {
+            this.currentUser.clubs = onboardingData.clubs || []
+          }
           sessionStorage.setItem('user', JSON.stringify(this.currentUser))
         }
 
@@ -587,16 +614,40 @@ export const useClubStore = defineStore('club', {
       return { success: false }
     },
 
-    updateUserProfile(email, name, phone, dob) {
+    addEquipment(name, facilityId, usage, status = 'Active', notes = '') {
+      const newEquip = {
+        id: 'EQ-' + Math.floor(1000 + Math.random() * 9000),
+        name,
+        facilityId,
+        usage,
+        status,
+        lastCheck: new Date().toISOString().split('T')[0],
+        notes
+      }
+      this.equipment.push(newEquip)
+      return { success: true, equipment: newEquip }
+    },
+
+    updateUserProfile(email, name, phone, dob, clubs = [], coachingSport = '') {
       const user = this.users.find(u => u.email.toLowerCase() === email.toLowerCase())
       if (user) {
         user.name = name
         user.phone = phone
         user.dob = dob
+        if (user.role === 'member') {
+          user.clubs = clubs || []
+        } else if (user.role === 'coach') {
+          user.coachingSport = coachingSport || ''
+        }
         if (this.currentUser && this.currentUser.email.toLowerCase() === email.toLowerCase()) {
           this.currentUser.name = name
           this.currentUser.phone = phone
           this.currentUser.dob = dob
+          if (user.role === 'member') {
+            this.currentUser.clubs = clubs || []
+          } else if (user.role === 'coach') {
+            this.currentUser.coachingSport = coachingSport || ''
+          }
           sessionStorage.setItem('user', JSON.stringify(this.currentUser))
         }
         return { success: true }
@@ -618,6 +669,115 @@ export const useClubStore = defineStore('club', {
         return { success: true }
       }
       return { success: false, message: 'User not found.' }
+    },
+
+    createTournament(name, sport, format, date, venue, max, deadline) {
+      const newEvent = {
+        id: Date.now(),
+        name,
+        sport,
+        format,
+        date,
+        venue,
+        registered: 0,
+        max: parseInt(max, 10),
+        status: 'Active',
+        deadline,
+        roster: [],
+        fixtures: []
+      }
+      this.events.unshift(newEvent)
+      return { success: true, event: newEvent }
+    },
+
+    closeRegistrationAndGenerateFixtures(eventId) {
+      const event = this.events.find(e => e.id === eventId)
+      if (!event) return { success: false, message: 'Tournament not found' }
+      
+      event.status = 'Registration Closed'
+      
+      // Seed dummy players if the roster is empty for evaluation demo
+      if (event.roster.length < 2) {
+        event.roster = [
+          { name: 'Alex Mercer', email: 'alex@nexsport.com', attendanceRate: 85, status: 'Approved' },
+          { name: 'John Doe', email: 'john@nexsport.com', attendanceRate: 78, status: 'Approved' },
+          { name: 'Michael Park', email: 'michael@nexsport.com', attendanceRate: 92, status: 'Approved' },
+          { name: 'Sara Connor', email: 'sara@nexsport.com', attendanceRate: 95, status: 'Approved' },
+          { name: 'Emma Wilson', email: 'emma@nexsport.com', attendanceRate: 80, status: 'Approved' },
+          { name: 'David Lee', email: 'david@nexsport.com', attendanceRate: 76, status: 'Approved' },
+          { name: 'Jack Shepard', email: 'jack@nexsport.com', attendanceRate: 88, status: 'Approved' },
+          { name: 'Kate Austen', email: 'kate@nexsport.com', attendanceRate: 84, status: 'Approved' }
+        ]
+        event.registered = 8
+      }
+      
+      const players = event.roster.filter(p => p.status === 'Approved').map(p => p.name)
+      
+      let roundName = 'Finals'
+      if (players.length > 4) roundName = 'Quarterfinals'
+      else if (players.length > 2) roundName = 'Semifinals'
+      
+      event.fixtures = []
+      for (let i = 0; i < players.length; i += 2) {
+        event.fixtures.push({
+          round: roundName,
+          match: `Match ${Math.floor(i / 2) + 1}`,
+          player1: players[i],
+          player2: players[i + 1] || 'BYE',
+          winner: ''
+        })
+      }
+      return { success: true }
+    },
+
+    generateNextRound(eventId) {
+      const event = this.events.find(e => e.id === eventId)
+      if (!event) return { success: false }
+      
+      const currentFixtures = event.fixtures
+      if (!currentFixtures.length) return { success: false, message: 'No current fixtures' }
+      
+      const unresolved = currentFixtures.some(f => !f.winner)
+      if (unresolved) return { success: false, message: 'Please select winners for all matches in the current round.' }
+      
+      const winners = currentFixtures.map(f => f.winner)
+      
+      if (winners.length === 1) {
+        event.status = 'Finished'
+        event.winner = winners[0]
+        return { success: true, finished: true, winner: winners[0] }
+      }
+      
+      let nextRoundName = 'Finals'
+      if (winners.length > 4) nextRoundName = 'Semifinals'
+      
+      const nextFixtures = []
+      for (let i = 0; i < winners.length; i += 2) {
+        nextFixtures.push({
+          round: nextRoundName,
+          match: `Match ${Math.floor(i / 2) + 1}`,
+          player1: winners[i],
+          player2: winners[i + 1] || 'BYE',
+          winner: ''
+        })
+      }
+      
+      event.fixtures = nextFixtures
+      return { success: true, finished: false }
+    },
+
+    announceTournamentWinner(eventId) {
+      const event = this.events.find(e => e.id === eventId)
+      if (event && event.status === 'Finished' && event.winner) {
+        event.status = 'Completed'
+        this.broadcastAnnouncement(
+          `Tournament Winner Announcement!`,
+          `Congratulations to ${event.winner} for winning the ${event.name} tournament! Excellent sportsmanship displayed by all teams.`,
+          'success'
+        )
+        return { success: true }
+      }
+      return { success: false }
     }
   }
 })

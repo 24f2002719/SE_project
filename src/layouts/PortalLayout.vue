@@ -1,25 +1,25 @@
 <template>
   <div class="min-h-screen bg-[#F8FAFC] flex text-on-surface font-body-md antialiased">
     <!-- Desktop Side Navigation -->
-    <aside class="hidden md:flex flex-col h-full w-64 fixed left-0 top-0 bg-surface-container-low dark:bg-primary-container py-lg border-r border-outline-variant/30 z-40 transition-all duration-300">
+    <aside class="hidden md:flex flex-col h-full w-64 fixed left-0 top-0 bg-[#131b2e] py-lg border-r border-white/5 z-40 transition-all duration-300">
       <div class="px-md mb-xl flex flex-col items-center">
         <!-- Logo -->
         <div class="flex items-center gap-xs mb-md self-start">
           <span class="material-symbols-outlined text-secondary-container text-3xl font-variation-settings-['FILL'_1]">sports_soccer</span>
-          <span class="font-headline-md text-headline-md font-bold text-primary dark:text-inverse-primary tracking-tight">NexSport</span>
+          <span class="font-headline-md text-headline-md font-bold text-white tracking-tight">NexSport</span>
         </div>
         
         <!-- Profile info block -->
         <router-link 
           :to="'/' + (store.currentUser?.role || 'member') + '/profile'"
-          class="flex items-center gap-sm mt-md p-sm rounded-lg bg-surface-container-highest/40 w-full border border-outline-variant/20 hover:bg-surface-variant transition-colors group cursor-pointer"
+          class="flex items-center gap-sm mt-md p-sm rounded-lg bg-white/5 w-full border border-white/10 hover:bg-white/10 transition-colors group cursor-pointer"
         >
-          <div class="w-10 h-10 rounded-full bg-surface-variant overflow-hidden flex-shrink-0 flex items-center justify-center border-2 border-surface-container-lowest group-hover:border-secondary transition-colors">
-            <span class="material-symbols-outlined text-primary text-xl">person</span>
+          <div class="w-10 h-10 rounded-full bg-white/10 overflow-hidden flex-shrink-0 flex items-center justify-center border-2 border-white/20 group-hover:border-secondary-container transition-colors">
+            <span class="material-symbols-outlined text-white/80 text-xl">person</span>
           </div>
           <div class="overflow-hidden">
-            <p class="font-label-bold text-label-bold text-on-surface truncate group-hover:text-secondary transition-colors">{{ store.currentUser?.name || 'User Profile' }}</p>
-            <p class="font-body-sm text-body-sm text-on-surface-variant truncate capitalize">{{ store.currentUser?.role }} Portal</p>
+            <p class="font-label-bold text-label-bold text-white truncate group-hover:text-secondary-container transition-colors">{{ store.currentUser?.name || 'User Profile' }}</p>
+            <p class="font-body-sm text-body-sm text-white/60 truncate capitalize">{{ store.currentUser?.role }} Portal</p>
           </div>
         </router-link>
       </div>
@@ -30,10 +30,10 @@
           v-for="link in currentLinks" 
           :key="link.to"
           :to="link.to" 
-          class="flex items-center gap-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-variant hover:text-secondary transition-all pl-4 group scale-98 hover:scale-100 duration-200"
-          active-class="border-l-4 border-secondary bg-surface-container-high pl-3 font-bold text-secondary dark:text-secondary"
+          class="flex items-center gap-md py-sm rounded-lg text-white/70 hover:bg-white/10 hover:text-white transition-all pl-4 group scale-98 hover:scale-100 duration-200"
+          active-class="border-l-4 border-secondary-container bg-white/10 pl-3 font-bold text-white"
         >
-          <span class="material-symbols-outlined group-hover:text-secondary transition-colors">{{ link.icon }}</span>
+          <span class="material-symbols-outlined group-hover:text-white transition-colors">{{ link.icon }}</span>
           <span class="font-label-bold text-label-bold">{{ link.name }}</span>
         </router-link>
       </nav>
@@ -43,7 +43,7 @@
         <router-link 
           v-if="store.currentUser?.role === 'member'" 
           to="/member/booking" 
-          class="w-full bg-primary hover:bg-surface-tint text-on-primary font-label-bold text-label-bold py-3 rounded-lg transition-colors flex items-center justify-center gap-2 shadow-sm"
+          class="w-full bg-[#fd761a] hover:bg-secondary text-white font-label-bold text-label-bold py-3 rounded-lg transition-colors flex items-center justify-center gap-2 shadow-sm"
         >
           <span class="material-symbols-outlined text-[18px]">add</span>
           Book a Court
@@ -51,14 +51,13 @@
         
         <button 
           @click="handleLogout" 
-          class="w-full border border-outline-variant hover:bg-error/10 hover:border-error hover:text-error text-on-surface-variant font-label-bold text-label-bold py-2.5 rounded-lg transition-colors flex items-center justify-center gap-2"
+          class="w-full border border-white/20 hover:bg-error/20 hover:border-error hover:text-white text-white/80 font-label-bold text-label-bold py-2.5 rounded-lg transition-colors flex items-center justify-center gap-2"
         >
           <span class="material-symbols-outlined text-[18px]">logout</span>
           Logout
         </button>
       </div>
     </aside>
-
     <!-- Mobile Top Navigation Header -->
     <header class="md:hidden flex justify-between items-center w-full px-margin-mobile h-16 bg-white border-b border-outline-variant fixed top-0 z-40 shadow-sm">
       <div class="flex items-center gap-xs">
@@ -207,6 +206,7 @@
         </div>
       </header>
 
+
       <!-- Main Canvas Slots -->
       <div class="flex-1 max-w-7xl mx-auto w-full py-md">
         <slot />
@@ -256,7 +256,7 @@ const linksMap = {
     { name: 'Dashboard', shortName: 'Dash', icon: 'dashboard', to: '/member/dashboard' },
     { name: 'Facility Booking', shortName: 'Book', icon: 'calendar_today', to: '/member/booking' },
     { name: 'My Schedule', shortName: 'Schedule', icon: 'event_note', to: '/member/schedule' },
-    { name: 'Events & Nominations', shortName: 'Events', icon: 'sports_soccer', to: '/member/events' },
+    { name: 'Events', shortName: 'Events', icon: 'sports_soccer', to: '/member/events' },
     { name: 'My Attendance', shortName: 'Attendance', icon: 'rule', to: '/member/attendance' },
     { name: 'Payments', shortName: 'Payments', icon: 'payments', to: '/member/payments' },
     { name: 'Onboarding', shortName: 'Setup', icon: 'speed', to: '/member/onboarding' },

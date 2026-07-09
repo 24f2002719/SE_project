@@ -154,7 +154,7 @@
         <div class="space-y-md">
           <h4 class="font-label-bold text-label-bold text-primary uppercase tracking-wider">Legal & Contact</h4>
           <ul class="space-y-sm text-sm">
-            <li><span class="text-on-surface-variant">IISER Bhopal Sports Complex</span></li>
+            <li><span class="text-on-surface-variant">NexSport Sports Complex</span></li>
             <li><span class="text-on-surface-variant">Email: support@nexsport.com</span></li>
           </ul>
         </div>

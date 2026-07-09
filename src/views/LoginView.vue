@@ -61,7 +61,7 @@
                   v-model="loginEmail" 
                   class="block w-full pl-10 pr-3 py-3 border border-outline-variant rounded bg-white text-on-surface font-body-md input-focus-ring placeholder-outline transition-all" 
                   id="email" 
-                  placeholder="name@iiserb.ac.in" 
+                  placeholder="name@nexsport.com" 
                   required 
                   type="email"
                 />
@@ -150,12 +150,12 @@
                   v-model="regEmail" 
                   class="block w-full pl-10 pr-3 py-3 border border-outline-variant rounded bg-white text-on-surface font-body-md input-focus-ring placeholder-outline transition-all" 
                   id="reg-email" 
-                  placeholder="username@iiserb.ac.in" 
+                  placeholder="username@domain.com" 
                   required 
                   type="email"
                 />
               </div>
-              <p class="text-[10px] text-on-surface-variant mt-1">Must be a valid IISER Bhopal email domain (@iiserb.ac.in)</p>
+              <p class="text-[10px] text-on-surface-variant mt-1">Must be a valid email address domain</p>
             </div>
 
             <div>
@@ -184,7 +184,47 @@
               >
                 <option value="member">Club Member / Player</option>
                 <option value="coach">Volunteer Coach</option>
+                <option value="parent">Parent / Guardian</option>
               </select>
+            </div>
+
+            <!-- Member Clubs signup selection -->
+            <div v-if="regRole === 'member'" class="space-y-xs pt-1">
+              <label class="block font-label-bold text-label-bold text-on-surface-variant mb-xs">Select Clubs to Join</label>
+              <div class="grid grid-cols-2 gap-xs text-xs">
+                <label v-for="club in ['Badminton', 'Volleyball', 'Tennis', 'Swimming', 'Athletics']" :key="club" class="flex items-center gap-2 p-2.5 border border-outline-variant rounded bg-slate-50/50 hover:bg-slate-50 cursor-pointer">
+                  <input type="checkbox" v-model="regClubs" :value="club" class="h-4 w-4 rounded border-outline-variant text-primary" />
+                  <span>{{ club }} Club</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Coach Sport signup selection -->
+            <div v-if="regRole === 'coach'" class="space-y-xs pt-1">
+              <label class="block font-label-bold text-label-bold text-on-surface-variant mb-xs" for="reg-coaching-sport">Select Coaching Sport</label>
+              <select v-model="regCoachingSport" class="block w-full px-3 py-3 border border-outline-variant rounded bg-white text-on-surface font-body-md input-focus-ring outline-none" id="reg-coaching-sport" required>
+                <option value="" disabled>Select Coaching Sport</option>
+                <option v-for="sport in ['Badminton', 'Volleyball', 'Tennis', 'Swimming', 'Athletics']" :key="sport" :value="sport">{{ sport }} Coach</option>
+              </select>
+            </div>
+
+            <!-- Conditional Child Email for Parent Accounts -->
+            <div v-if="regRole === 'parent'">
+              <label class="block font-label-bold text-label-bold text-on-surface-variant mb-xs" for="reg-child-email">Child's Email</label>
+              <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <span class="material-symbols-outlined text-outline">child_care</span>
+                </div>
+                <input 
+                  v-model="regChildEmail" 
+                  class="block w-full pl-10 pr-3 py-3 border border-outline-variant rounded bg-white text-on-surface font-body-md input-focus-ring placeholder-outline transition-all" 
+                  id="reg-child-email" 
+                  placeholder="child@domain.com" 
+                  required 
+                  type="email"
+                />
+              </div>
+              <p class="text-[10px] text-on-surface-variant mt-1">Must be the registered email of your child</p>
             </div>
 
             <div class="pt-sm space-y-md">
@@ -212,21 +252,25 @@
           <div class="mt-lg pt-md border-t border-outline-variant/60">
             <h3 class="text-center font-label-bold text-label-bold text-secondary uppercase tracking-wider mb-sm">Quick Evaluation Login</h3>
             <div class="grid grid-cols-2 gap-xs">
-              <button @click="quickLogin('alex@iiserb.ac.in')" class="py-2 border border-outline-variant rounded text-xs font-semibold hover:bg-surface-container transition-colors flex flex-col items-center">
+              <button @click="quickLogin('alex@nexsport.com')" class="py-2 border border-outline-variant rounded text-xs font-semibold hover:bg-surface-container transition-colors flex flex-col items-center">
                 <span>Member Portal</span>
                 <span class="text-[10px] text-on-surface-variant">Alex Mercer</span>
               </button>
-              <button @click="quickLogin('deepanshi@iiserb.ac.in')" class="py-2 border border-outline-variant rounded text-xs font-semibold hover:bg-surface-container transition-colors flex flex-col items-center">
+              <button @click="quickLogin('deepanshi@nexsport.com')" class="py-2 border border-outline-variant rounded text-xs font-semibold hover:bg-surface-container transition-colors flex flex-col items-center">
                 <span>Coach Portal</span>
                 <span class="text-[10px] text-on-surface-variant">Deepanshi A.</span>
               </button>
-              <button @click="quickLogin('krishna@iiserb.ac.in')" class="py-2 border border-outline-variant rounded text-xs font-semibold hover:bg-surface-container transition-colors flex flex-col items-center">
+              <button @click="quickLogin('krishna@nexsport.com')" class="py-2 border border-outline-variant rounded text-xs font-semibold hover:bg-surface-container transition-colors flex flex-col items-center">
                 <span>Secretary Portal</span>
                 <span class="text-[10px] text-on-surface-variant">Krishna A.</span>
               </button>
-              <button @click="quickLogin('verma@iiserb.ac.in')" class="py-2 border border-outline-variant rounded text-xs font-semibold hover:bg-surface-container transition-colors flex flex-col items-center">
+              <button @click="quickLogin('verma@nexsport.com')" class="py-2 border border-outline-variant rounded text-xs font-semibold hover:bg-surface-container transition-colors flex flex-col items-center">
                 <span>Faculty Advisor</span>
                 <span class="text-[10px] text-on-surface-variant">Dr. Verma</span>
+              </button>
+              <button @click="quickLogin('parent@nexsport.com')" class="col-span-2 py-2 border border-outline-variant rounded text-xs font-semibold hover:bg-surface-container transition-colors flex flex-col items-center">
+                <span>Parent Portal</span>
+                <span class="text-[10px] text-on-surface-variant">Mr. Mercer (Parent)</span>
               </button>
             </div>
           </div>
@@ -258,11 +302,12 @@ const regName = ref('')
 const regEmail = ref('')
 const regPassword = ref('')
 const regRole = ref('member')
+const regChildEmail = ref('')
+const regClubs = ref([])
+const regCoachingSport = ref('')
 
 onMounted(() => {
-  if (route.query.signup) {
-    isSignUp.value = true
-  }
+  store.restoreSession()
 })
 
 const handleLogin = () => {
@@ -277,12 +322,23 @@ const handleLogin = () => {
 
 const handleRegister = () => {
   feedback.value = null
-  const res = store.register(regName.value, regEmail.value, regPassword.value, regRole.value)
+  const res = store.register(
+    regName.value,
+    regEmail.value,
+    regPassword.value,
+    regRole.value,
+    regChildEmail.value,
+    regClubs.value,
+    regCoachingSport.value
+  )
   if (res.success) {
     feedback.value = { success: true, message: 'Account registered! Please log in.' }
     isSignUp.value = false
     loginEmail.value = regEmail.value
     loginPassword.value = regPassword.value
+    regChildEmail.value = ''
+    regClubs.value = []
+    regCoachingSport.value = ''
   } else {
     feedback.value = { success: false, message: res.message }
   }
@@ -303,7 +359,8 @@ const navigateUser = (role) => {
     member: '/member/onboarding', // Send to onboarding checklist first
     coach: '/coach/dashboard',
     admin: '/admin/dashboard',
-    faculty: '/faculty/dashboard'
+    faculty: '/faculty/dashboard',
+    parent: '/parent/dashboard'
   }
   
   // If Member onboarding is already completed, skip to dashboard

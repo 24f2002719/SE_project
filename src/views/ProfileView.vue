@@ -5,7 +5,7 @@
       <header class="flex justify-between items-end border-b border-outline-variant pb-sm">
         <div>
           <h1 class="font-display-lg text-display-lg font-bold text-primary tracking-tight">Personal Profile</h1>
-          <p class="font-body-lg text-body-lg text-on-surface-variant mt-2">Manage your IISER Bhopal athlete credentials and account security.</p>
+          <p class="font-body-lg text-body-lg text-on-surface-variant mt-2">Manage your athlete credentials and account security.</p>
         </div>
       </header>
 
@@ -55,49 +55,107 @@
             >
               Save Profile Changes
             </button>
+
+            <!-- Sports Clubs Selection (only for member) -->
+            <div v-if="store.currentUser?.role === 'member'" class="border-t border-outline-variant/30 pt-md mt-md space-y-md">
+              <h3 class="font-label-bold text-xs text-primary uppercase tracking-wider">My Sports Clubs (Select Multiple)</h3>
+              <div class="grid grid-cols-2 md:grid-cols-3 gap-sm text-xs">
+                <label v-for="club in ['Badminton', 'Volleyball', 'Tennis', 'Swimming', 'Athletics']" :key="club" class="flex items-center gap-2 p-sm border border-outline-variant rounded-lg bg-slate-50/50 hover:bg-slate-50 cursor-pointer">
+                  <input type="checkbox" v-model="profileForm.clubs" :value="club" class="h-4 w-4 rounded border-outline-variant text-primary" />
+                  <span>{{ club }} Club</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Coaching Assignment Selection (only for coach) -->
+            <div v-if="store.currentUser?.role === 'coach'" class="border-t border-outline-variant/30 pt-md mt-md space-y-md">
+              <h3 class="font-label-bold text-xs text-primary uppercase tracking-wider">Coaching Sport Assignment (Select Single)</h3>
+              <div class="grid grid-cols-2 md:grid-cols-3 gap-sm text-xs">
+                <label v-for="sport in ['Badminton', 'Volleyball', 'Tennis', 'Swimming', 'Athletics']" :key="sport" class="flex items-center gap-2 p-sm border border-outline-variant rounded-lg bg-slate-50/50 hover:bg-slate-50 cursor-pointer">
+                  <input type="radio" v-model="profileForm.coachingSport" :value="sport" class="h-4 w-4 rounded-full border-outline-variant text-primary" />
+                  <span>{{ sport }} Coach</span>
+                </label>
+              </div>
+            </div>
           </form>
         </div>
 
-        <!-- Change Password Section (Span 5) -->
+        <!-- Security Settings (Span 5) -->
         <div class="lg:col-span-5 bg-white border border-outline-variant rounded-xl p-md shadow-sm flex flex-col justify-between">
           <div>
             <div class="border-b border-outline-variant pb-sm mb-md">
               <h2 class="font-headline-sm text-sm font-bold text-primary flex items-center gap-xs">
                 <span class="material-symbols-outlined text-secondary">security</span>
-                Security &amp; Password
+                Security Settings
               </h2>
             </div>
-
-            <div v-if="pwFeedback" :class="[pwFeedback.success ? 'bg-green-50 border-green-200 text-green-800' : 'bg-red-50 border-red-200 text-red-800']" class="p-sm border rounded text-xs font-semibold mb-md">
-              {{ pwFeedback.message }}
+            <p class="text-xs text-on-surface-variant mb-md leading-relaxed">
+              Keep your credentials and account safe. Update your security password periodically.
+            </p>
+            <div class="space-y-sm">
+              <div class="flex items-center justify-between p-sm rounded-lg bg-slate-50 border border-outline-variant/30 text-xs">
+                <div class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-outline">lock</span>
+                  <div>
+                    <p class="font-semibold text-primary">Account Password</p>
+                    <p class="text-[10px] text-on-surface-variant mt-0.5">Last updated: 3 months ago</p>
+                  </div>
+                </div>
+                <a 
+                  href="#" 
+                  @click.prevent="showPasswordModal = true" 
+                  class="font-semibold text-secondary hover:underline cursor-pointer"
+                >
+                  Change password
+                </a>
+              </div>
             </div>
-
-            <form @submit.prevent="handleChangePassword" class="space-y-md">
-              <div class="space-y-1">
-                <label class="block font-label-bold text-xs text-on-surface-variant">Current Password</label>
-                <input v-model="pwForm.oldPassword" class="w-full bg-slate-50 border border-outline-variant rounded px-3 py-2.5 font-body-sm outline-none focus:border-primary" required type="password" />
-              </div>
-              
-              <div class="space-y-1">
-                <label class="block font-label-bold text-xs text-on-surface-variant">New Password</label>
-                <input v-model="pwForm.newPassword" class="w-full bg-slate-50 border border-outline-variant rounded px-3 py-2.5 font-body-sm outline-none focus:border-primary" required type="password" />
-              </div>
-
-              <div class="space-y-1">
-                <label class="block font-label-bold text-xs text-on-surface-variant">Confirm New Password</label>
-                <input v-model="pwForm.confirmPassword" class="w-full bg-slate-50 border border-outline-variant rounded px-3 py-2.5 font-body-sm outline-none focus:border-primary" required type="password" />
-              </div>
-
-              <button 
-                type="submit" 
-                class="w-full bg-secondary hover:bg-secondary-container text-on-secondary font-label-bold text-xs py-2.5 rounded shadow-sm transition-colors mt-4"
-              >
-                Change Password
-              </button>
-            </form>
           </div>
         </div>
 
+      </div>
+    </div>
+
+    <!-- Change Password Dialog Modal -->
+    <div v-if="showPasswordModal" class="fixed inset-0 bg-primary/40 backdrop-blur-sm z-50 flex items-center justify-center p-md">
+      <div class="bg-white border border-outline-variant rounded-xl w-full max-w-md shadow-lg p-md space-y-md" @click.stop>
+        <div class="flex justify-between items-center border-b border-outline-variant pb-sm">
+          <h3 class="font-headline-sm text-sm font-bold text-primary flex items-center gap-1">
+            <span class="material-symbols-outlined text-secondary">security</span>
+            Change Password
+          </h3>
+          <button type="button" @click="closePasswordModal" class="p-1 hover:bg-slate-100 rounded-full cursor-pointer">
+            <span class="material-symbols-outlined text-xl">close</span>
+          </button>
+        </div>
+
+        <div v-if="pwFeedback" :class="[pwFeedback.success ? 'bg-green-50 border-green-200 text-green-800' : 'bg-red-50 border-red-200 text-red-800']" class="p-sm border rounded text-xs font-semibold">
+          {{ pwFeedback.message }}
+        </div>
+
+        <form @submit.prevent="handleChangePassword" class="space-y-md">
+          <div class="space-y-1 text-xs">
+            <label class="block font-semibold text-on-surface-variant">Current Password</label>
+            <input v-model="pwForm.oldPassword" class="w-full bg-slate-50 border border-outline-variant rounded px-3 py-2 outline-none focus:border-primary" required type="password" />
+          </div>
+          
+          <div class="space-y-1 text-xs">
+            <label class="block font-semibold text-on-surface-variant">New Password</label>
+            <input v-model="pwForm.newPassword" class="w-full bg-slate-50 border border-outline-variant rounded px-3 py-2 outline-none focus:border-primary" required type="password" />
+          </div>
+
+          <div class="space-y-1 text-xs">
+            <label class="block font-semibold text-on-surface-variant">Confirm New Password</label>
+            <input v-model="pwForm.confirmPassword" class="w-full bg-slate-50 border border-outline-variant rounded px-3 py-2 outline-none focus:border-primary" required type="password" />
+          </div>
+
+          <button 
+            type="submit" 
+            class="w-full py-2.5 bg-secondary text-on-secondary font-label-bold text-xs rounded hover:bg-secondary-container transition-colors shadow-sm cursor-pointer"
+          >
+            Update Password
+          </button>
+        </form>
       </div>
     </div>
   </PortalLayout>
@@ -112,11 +170,14 @@ const store = useClubStore()
 
 const profileFeedback = ref(null)
 const pwFeedback = ref(null)
+const showPasswordModal = ref(false)
 
 const profileForm = reactive({
   name: '',
   phone: '',
-  dob: ''
+  dob: '',
+  clubs: [],
+  coachingSport: ''
 })
 
 const pwForm = reactive({
@@ -131,8 +192,18 @@ onMounted(() => {
     profileForm.name = store.currentUser.name || ''
     profileForm.phone = store.currentUser.phone || ''
     profileForm.dob = store.currentUser.dob || ''
+    profileForm.clubs = store.currentUser.clubs || []
+    profileForm.coachingSport = store.currentUser.coachingSport || ''
   }
 })
+
+const closePasswordModal = () => {
+  showPasswordModal.value = false
+  pwForm.oldPassword = ''
+  pwForm.newPassword = ''
+  pwForm.confirmPassword = ''
+  pwFeedback.value = null
+}
 
 const handleUpdateProfile = () => {
   profileFeedback.value = null
@@ -142,7 +213,9 @@ const handleUpdateProfile = () => {
     store.currentUser.email,
     profileForm.name,
     profileForm.phone,
-    profileForm.dob
+    profileForm.dob,
+    profileForm.clubs,
+    profileForm.coachingSport
   )
 
   if (res.success) {
@@ -178,7 +251,10 @@ const handleChangePassword = () => {
     pwForm.oldPassword = ''
     pwForm.newPassword = ''
     pwForm.confirmPassword = ''
-    setTimeout(() => { pwFeedback.value = null }, 4000)
+    setTimeout(() => { 
+      pwFeedback.value = null 
+      showPasswordModal.value = false
+    }, 2000)
   } else {
     pwFeedback.value = { success: false, message: res.message || 'Failed to update password.' }
   }

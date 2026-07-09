@@ -126,6 +126,30 @@
               </router-link>
             </div>
           </div>
+
+          <!-- My Clubs Widget -->
+          <div class="bg-white border border-outline-variant rounded-xl p-md shadow-sm space-y-md">
+            <div class="flex justify-between items-center pb-xs border-b border-outline-variant/30">
+              <h3 class="font-headline-sm text-xs font-bold text-primary flex items-center gap-1">
+                <span class="material-symbols-outlined text-secondary text-base">groups</span>
+                My Joined Clubs
+              </h3>
+              <router-link to="/member/profile" class="text-xs text-secondary font-label-bold hover:underline">Manage</router-link>
+            </div>
+            <div class="flex flex-wrap gap-xs">
+              <span 
+                v-for="club in (store.currentUser?.clubs || [])" 
+                :key="club"
+                class="px-2.5 py-1 bg-surface-container text-primary text-xs font-semibold rounded-full border border-outline-variant/20 flex items-center gap-1 shadow-sm"
+              >
+                <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+                {{ club }} Club
+              </span>
+              <p v-if="!(store.currentUser?.clubs && store.currentUser.clubs.length)" class="text-xs text-on-surface-variant italic">
+                No clubs joined yet. Click Manage to choose.
+              </p>
+            </div>
+          </div>
         </div>
 
         <!-- Upcoming Sessions (Span 6) -->
