@@ -58,6 +58,7 @@
                 <div class="space-y-sm text-xs text-on-surface-variant">
                   <p class="flex items-center gap-xs"><span class="material-symbols-outlined text-sm">calendar_month</span> Date: {{ e.date }}</p>
                   <p class="flex items-center gap-xs"><span class="material-symbols-outlined text-sm">location_on</span> Venue: {{ e.venue }}</p>
+                  <p class="flex items-center gap-xs"><span class="material-symbols-outlined text-sm">rule</span> Req. Attendance: {{ e.minAttendance !== undefined ? e.minAttendance : 75 }}%</p>
                   <div class="flex justify-between items-center pt-xs">
                     <span>Slots: {{ e.registered }} / {{ e.max }}</span>
                     
@@ -294,6 +295,7 @@ const submitRegistration = () => {
 
   const ev = store.events.find(e => e.id === selectedRegEvent.value.id)
   if (ev) {
+    const threshold = ev.minAttendance !== undefined ? ev.minAttendance : 75
     ev.roster.push({
       name: regForm.name,
       email: regForm.email,
@@ -301,7 +303,7 @@ const submitRegistration = () => {
       skillLevel: regForm.skillLevel,
       emergencyContact: regForm.emergencyContact,
       attendanceRate: store.currentUser.attendanceRate,
-      status: store.currentUser.attendanceRate >= 75 ? 'Approved' : 'Pending Approval'
+      status: store.currentUser.attendanceRate >= threshold ? 'Approved' : 'Pending Approval'
     })
     ev.registered++
     alert(`Registration successful! You have joined the roster for ${ev.name}.`)

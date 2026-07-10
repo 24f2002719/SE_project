@@ -332,10 +332,6 @@
           </select>
         </div>
 
-        <div class="space-y-1 text-xs">
-          <label class="block font-semibold text-on-surface-variant">Availability Time Details</label>
-          <input v-model="facilityForm.time" class="w-full bg-slate-50 border border-outline-variant rounded px-3 py-2.5 outline-none focus:border-primary" placeholder="e.g. Open now until 6:00 PM" required />
-        </div>
 
         <div class="space-y-1 text-xs">
           <label class="block font-semibold text-on-surface-variant">Accent Color Picker</label>

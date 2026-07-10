@@ -561,6 +561,19 @@
             </div>
           </div>
 
+          <div class="space-y-1 text-xs">
+            <label class="flex justify-between font-semibold text-on-surface-variant">
+              <span>Minimum Attendance Criteria</span>
+              <span class="text-secondary font-bold">{{ newTournamentForm.minAttendance }}%</span>
+            </label>
+            <input type="range" min="50" max="100" step="5" v-model="newTournamentForm.minAttendance" class="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-primary" />
+            <div class="flex justify-between text-[10px] text-outline">
+              <span>50%</span>
+              <span>75%</span>
+              <span>100%</span>
+            </div>
+          </div>
+
           <button type="submit" class="w-full py-2.5 bg-primary text-on-primary font-label-bold text-xs rounded hover:bg-surface-tint transition-all shadow-sm cursor-pointer">
             Publish Tournament
           </button>
@@ -625,6 +638,19 @@
                 <option value="8">8 Players (Quarterfinals)</option>
                 <option value="16">16 Players</option>
               </select>
+            </div>
+          </div>
+
+          <div class="space-y-1 text-xs">
+            <label class="flex justify-between font-semibold text-on-surface-variant">
+              <span>Minimum Attendance Criteria</span>
+              <span class="text-secondary font-bold">{{ editTournamentForm.minAttendance }}%</span>
+            </label>
+            <input type="range" min="50" max="100" step="5" v-model="editTournamentForm.minAttendance" class="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-primary" />
+            <div class="flex justify-between text-[10px] text-outline">
+              <span>50%</span>
+              <span>75%</span>
+              <span>100%</span>
             </div>
           </div>
 
@@ -728,7 +754,8 @@ const editTournamentForm = reactive({
   venue: '',
   max: 8,
   deadline: '',
-  status: 'Active'
+  status: 'Active',
+  minAttendance: 75
 })
 
 const broadcastForm = reactive({
@@ -744,7 +771,8 @@ const newTournamentForm = reactive({
   date: '',
   venue: '',
   max: 8,
-  deadline: ''
+  deadline: '',
+  minAttendance: 75
 })
 
 const formatMonth = (dateStr) => {
@@ -807,6 +835,7 @@ const openCreateTournamentModal = () => {
   newTournamentForm.venue = ''
   newTournamentForm.max = 8
   newTournamentForm.deadline = ''
+  newTournamentForm.minAttendance = 75
   showCreateTournamentModal.value = true
 }
 
@@ -818,7 +847,8 @@ const submitCreateTournament = () => {
     newTournamentForm.date,
     newTournamentForm.venue,
     newTournamentForm.max,
-    newTournamentForm.deadline
+    newTournamentForm.deadline,
+    newTournamentForm.minAttendance
   )
   showCreateTournamentModal.value = false
   activeTab.value = 'tournaments'
@@ -860,6 +890,7 @@ const openEditTournamentModal = (event) => {
   editTournamentForm.max = event.max
   editTournamentForm.deadline = event.deadline
   editTournamentForm.status = event.status
+  editTournamentForm.minAttendance = event.minAttendance !== undefined ? event.minAttendance : 75
   showEditTournamentModal.value = true
 }
 
@@ -872,7 +903,8 @@ const submitEditTournament = () => {
     venue: editTournamentForm.venue,
     max: editTournamentForm.max,
     deadline: editTournamentForm.deadline,
-    status: editTournamentForm.status
+    status: editTournamentForm.status,
+    minAttendance: editTournamentForm.minAttendance
   })
   showEditTournamentModal.value = false
   alert(`Tournament "${editTournamentForm.name}" updated successfully.`)
