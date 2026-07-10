@@ -7,6 +7,13 @@
           <h2 class="font-headline-sm text-sm font-bold text-primary">Facility Management Control Panel</h2>
           <p class="text-xs text-on-surface-variant mt-1">Manage court status, maintenance blockouts, and gym equipment registries.</p>
         </div>
+        <button 
+          @click="openAddFacilityModal"
+          class="px-4 py-2.5 bg-primary text-white rounded-lg text-xs font-label-bold hover:bg-surface-tint transition-colors flex items-center gap-1.5 shadow-sm cursor-pointer"
+        >
+          <span class="material-symbols-outlined text-sm font-bold">add</span>
+          Add Facility
+        </button>
       </header>
 
       <!-- Stats overview -->
@@ -123,20 +130,34 @@
                   </div>
                 </div>
                 
-                <div class="flex gap-2 text-xs">
+                <div class="flex gap-1.5 text-xs">
                   <button 
                     v-if="c.status !== 'MAINTENANCE'"
                     @click="toggleMaintenanceBlock(c.id, true)"
-                    class="flex-grow bg-primary hover:bg-surface-tint text-on-primary py-1.5 rounded font-semibold transition-colors cursor-pointer"
+                    class="flex-grow bg-primary hover:bg-surface-tint text-on-primary py-1.5 rounded font-semibold transition-colors cursor-pointer text-center text-[10px]"
                   >
-                    Block Maintenance
+                    Block Maint.
                   </button>
                   <button 
                     v-else
                     @click="toggleMaintenanceBlock(c.id, false)"
-                    class="flex-grow bg-green-700 hover:bg-green-800 text-white py-1.5 rounded font-semibold transition-colors cursor-pointer"
+                    class="flex-grow bg-green-700 hover:bg-green-800 text-white py-1.5 rounded font-semibold transition-colors cursor-pointer text-center text-[10px]"
                   >
                     Clear Block
+                  </button>
+                  <button 
+                    @click="openEditFacilityModal(c)"
+                    class="px-2 py-1.5 border border-outline-variant hover:bg-slate-50 text-primary rounded font-semibold transition-colors cursor-pointer flex items-center"
+                    title="Edit Facility"
+                  >
+                    <span class="material-symbols-outlined text-xs">edit</span>
+                  </button>
+                  <button 
+                    @click="deleteFacility(c.id, c.name)"
+                    class="px-2 py-1.5 border border-red-200 hover:bg-red-50 text-error rounded font-semibold transition-colors cursor-pointer flex items-center"
+                    title="Delete Facility"
+                  >
+                    <span class="material-symbols-outlined text-xs">delete</span>
                   </button>
                 </div>
               </div>
@@ -160,7 +181,7 @@
             </button>
           </div>
           
-          <div class="space-y-sm max-h-[500px] overflow-y-auto text-xs pr-1">
+          <div class="space-y-sm max-h-[850px] overflow-y-auto text-xs pr-1">
             <div 
               v-for="eq in store.equipment" 
               :key="eq.id"
@@ -276,6 +297,117 @@
         </button>
       </form>
     </div>
+
+    <!-- Add Facility Modal -->
+    <div v-if="showAddFacilityModal" class="fixed inset-0 bg-primary/40 backdrop-blur-sm z-50 flex items-center justify-center p-md">
+      <form @submit.prevent="submitAddFacility" class="bg-white border border-outline-variant rounded-xl w-full max-w-md shadow-lg flex flex-col p-md space-y-md animate-fade-in" @click.stop>
+        <div class="flex justify-between items-center border-b border-outline-variant pb-sm">
+          <h3 class="font-headline-sm text-sm font-bold text-primary flex items-center gap-1">
+            <span class="material-symbols-outlined text-secondary">build</span>
+            Add New Facility
+          </h3>
+          <button type="button" @click="showAddFacilityModal = false" class="p-1 hover:bg-slate-100 rounded-full cursor-pointer">
+            <span class="material-symbols-outlined text-xl">close</span>
+          </button>
+        </div>
+        
+        <div class="space-y-1 text-xs">
+          <label class="block font-semibold text-on-surface-variant">Facility Name</label>
+          <input v-model="facilityForm.name" class="w-full bg-slate-50 border border-outline-variant rounded px-3 py-2.5 outline-none focus:border-primary" placeholder="e.g. Badminton Court C" required />
+        </div>
+
+        <div class="space-y-1 text-xs">
+          <label class="block font-semibold text-on-surface-variant">Sport Type</label>
+          <select v-model="facilityForm.type" class="w-full bg-slate-50 border border-outline-variant rounded px-3 py-2.5 outline-none focus:border-primary" required>
+            <option v-for="sport in store.clubs" :key="sport" :value="sport">{{ sport }}</option>
+          </select>
+        </div>
+
+        <div class="space-y-1 text-xs">
+          <label class="block font-semibold text-on-surface-variant">Status</label>
+          <select v-model="facilityForm.status" class="w-full bg-slate-50 border border-outline-variant rounded px-3 py-2.5 outline-none focus:border-primary">
+            <option value="AVAILABLE">AVAILABLE</option>
+            <option value="BOOKED">BOOKED</option>
+            <option value="MAINTENANCE">MAINTENANCE</option>
+          </select>
+        </div>
+
+        <div class="space-y-1 text-xs">
+          <label class="block font-semibold text-on-surface-variant">Availability Time Details</label>
+          <input v-model="facilityForm.time" class="w-full bg-slate-50 border border-outline-variant rounded px-3 py-2.5 outline-none focus:border-primary" placeholder="e.g. Open now until 6:00 PM" required />
+        </div>
+
+        <div class="space-y-1 text-xs">
+          <label class="block font-semibold text-on-surface-variant">Accent Color Picker</label>
+          <div class="flex items-center gap-sm">
+            <input type="color" v-model="facilityForm.accent" class="h-10 w-12 border border-outline-variant rounded p-0.5 bg-slate-50 cursor-pointer" />
+            <span class="text-xs font-mono text-outline">{{ facilityForm.accent }}</span>
+          </div>
+        </div>
+
+        <button type="submit" class="w-full py-2.5 bg-primary text-on-primary font-label-bold text-xs rounded hover:bg-surface-tint transition-all shadow-sm cursor-pointer">
+          Create Facility
+        </button>
+      </form>
+    </div>
+
+    <!-- Edit Facility Modal -->
+    <div v-if="showEditFacilityModal" class="fixed inset-0 bg-primary/40 backdrop-blur-sm z-50 flex items-center justify-center p-md">
+      <form @submit.prevent="submitEditFacility" class="bg-white border border-outline-variant rounded-xl w-full max-w-md shadow-lg flex flex-col p-md space-y-md animate-fade-in" @click.stop>
+        <div class="flex justify-between items-center border-b border-outline-variant pb-sm">
+          <h3 class="font-headline-sm text-sm font-bold text-primary flex items-center gap-1">
+            <span class="material-symbols-outlined text-secondary">build</span>
+            Edit Facility
+          </h3>
+          <button type="button" @click="showEditFacilityModal = false" class="p-1 hover:bg-slate-100 rounded-full cursor-pointer">
+            <span class="material-symbols-outlined text-xl">close</span>
+          </button>
+        </div>
+        
+        <div class="space-y-1 text-xs">
+          <label class="block font-semibold text-on-surface-variant">Facility Name</label>
+          <input v-model="editFacilityForm.name" class="w-full bg-slate-50 border border-outline-variant rounded px-3 py-2.5 outline-none focus:border-primary" placeholder="e.g. Badminton Court C" required />
+        </div>
+
+        <div class="space-y-1 text-xs">
+          <label class="block font-semibold text-on-surface-variant">Sport Type</label>
+          <select v-model="editFacilityForm.type" class="w-full bg-slate-50 border border-outline-variant rounded px-3 py-2.5 outline-none focus:border-primary" required>
+            <option v-for="sport in store.clubs" :key="sport" :value="sport">{{ sport }}</option>
+          </select>
+        </div>
+
+        <div class="space-y-1 text-xs">
+          <label class="block font-semibold text-on-surface-variant">Status</label>
+          <select v-model="editFacilityForm.status" class="w-full bg-slate-50 border border-outline-variant rounded px-3 py-2.5 outline-none focus:border-primary">
+            <option value="AVAILABLE">AVAILABLE</option>
+            <option value="BOOKED">BOOKED</option>
+            <option value="MAINTENANCE">MAINTENANCE</option>
+          </select>
+        </div>
+
+        <div class="space-y-1 text-xs">
+          <label class="block font-semibold text-on-surface-variant">Availability Time Details</label>
+          <input v-model="editFacilityForm.time" class="w-full bg-slate-50 border border-outline-variant rounded px-3 py-2.5 outline-none focus:border-primary" placeholder="e.g. Open now until 6:00 PM" required />
+        </div>
+
+        <div class="space-y-1 text-xs">
+          <label class="block font-semibold text-on-surface-variant">Next Booking Details</label>
+          <input v-model="editFacilityForm.next" class="w-full bg-slate-50 border border-outline-variant rounded px-3 py-2.5 outline-none focus:border-primary" placeholder="e.g. Open" />
+        </div>
+
+        <div class="space-y-1 text-xs">
+          <label class="block font-semibold text-on-surface-variant">Accent Color Picker</label>
+          <div class="flex items-center gap-sm">
+            <input type="color" v-model="editFacilityForm.accent" class="h-10 w-12 border border-outline-variant rounded p-0.5 bg-slate-50 cursor-pointer" />
+            <span class="text-xs font-mono text-outline">{{ editFacilityForm.accent }}</span>
+          </div>
+        </div>
+
+        <button type="submit" class="w-full py-2.5 bg-primary text-on-primary font-label-bold text-xs rounded hover:bg-surface-tint transition-all shadow-sm cursor-pointer">
+          Save Changes
+        </button>
+      </form>
+    </div>
   </PortalLayout>
 </template>
 
@@ -287,12 +419,33 @@ import { useClubStore } from '../../stores/clubStore'
 const store = useClubStore()
 
 const showAddEquipModal = ref(false)
+const showAddFacilityModal = ref(false)
+const showEditFacilityModal = ref(false)
+
 const newEquipForm = reactive({
   name: '',
   facilityId: '',
   usage: 'Normal',
   status: 'Active',
   notes: ''
+})
+
+const facilityForm = reactive({
+  name: '',
+  type: 'Badminton',
+  status: 'AVAILABLE',
+  time: 'Open now',
+  accent: '#10B981'
+})
+
+const editFacilityForm = reactive({
+  id: '',
+  name: '',
+  type: 'Badminton',
+  status: 'AVAILABLE',
+  time: 'Open now',
+  next: 'Open',
+  accent: '#10B981'
 })
 
 const getCourtEquipment = (courtId) => {
@@ -349,5 +502,58 @@ const submitAddEquipment = () => {
   )
   showAddEquipModal.value = false
   alert(`Equipment "${newEquipForm.name}" registered successfully.`)
+}
+
+const openAddFacilityModal = () => {
+  facilityForm.name = ''
+  facilityForm.type = store.clubs[0] || 'Badminton'
+  facilityForm.status = 'AVAILABLE'
+  facilityForm.time = 'Open now'
+  facilityForm.accent = '#10B981'
+  showAddFacilityModal.value = true
+}
+
+const submitAddFacility = () => {
+  store.addCourt(
+    facilityForm.name,
+    facilityForm.type,
+    facilityForm.status,
+    facilityForm.time,
+    'Open',
+    facilityForm.accent
+  )
+  showAddFacilityModal.value = false
+  alert(`Facility "${facilityForm.name}" created successfully.`)
+}
+
+const openEditFacilityModal = (court) => {
+  editFacilityForm.id = court.id
+  editFacilityForm.name = court.name
+  editFacilityForm.type = court.type
+  editFacilityForm.status = court.status
+  editFacilityForm.time = court.time
+  editFacilityForm.next = court.next
+  editFacilityForm.accent = court.accent
+  showEditFacilityModal.value = true
+}
+
+const submitEditFacility = () => {
+  store.updateCourt(editFacilityForm.id, {
+    name: editFacilityForm.name,
+    type: editFacilityForm.type,
+    status: editFacilityForm.status,
+    time: editFacilityForm.time,
+    next: editFacilityForm.next,
+    accent: editFacilityForm.accent
+  })
+  showEditFacilityModal.value = false
+  alert(`Facility "${editFacilityForm.name}" updated successfully.`)
+}
+
+const deleteFacility = (id, name) => {
+  if (confirm(`Are you sure you want to delete facility "${name}"? This will also remove any bookings and equipment associated with this facility.`)) {
+    store.deleteCourt(id)
+    alert(`Facility "${name}" deleted successfully.`)
+  }
 }
 </script>

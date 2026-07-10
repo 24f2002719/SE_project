@@ -41,6 +41,13 @@
         >
           Tournament Manager
         </button>
+        <button 
+          @click="activeTab = 'clubs'" 
+          :class="[activeTab === 'clubs' ? 'border-b-2 border-secondary text-secondary font-bold' : 'text-on-surface-variant hover:text-primary']"
+          class="pb-2 text-sm px-3 transition-all cursor-pointer font-semibold"
+        >
+          Club Manager
+        </button>
       </div>
 
       <!-- Overview Tab -->
@@ -243,7 +250,7 @@
                   Venue: <span class="font-semibold">{{ event.venue }}</span>
                 </p>
               </div>
-              <div class="flex items-center gap-xs">
+              <div class="flex items-center gap-sm">
                 <span 
                   :class="[
                     event.status === 'Active' ? 'bg-blue-100 text-blue-800' :
@@ -254,6 +261,22 @@
                 >
                   {{ event.status }}
                 </span>
+                <div class="flex items-center gap-1 bg-slate-50 border border-outline-variant/20 rounded px-1.5 py-0.5">
+                  <button 
+                    @click="openEditTournamentModal(event)"
+                    class="p-0.5 hover:bg-slate-200 rounded text-primary cursor-pointer flex items-center"
+                    title="Edit Tournament"
+                  >
+                    <span class="material-symbols-outlined text-[16px]">edit</span>
+                  </button>
+                  <button 
+                    @click="deleteTournament(event.id, event.name)"
+                    class="p-0.5 hover:bg-red-100 rounded text-error cursor-pointer flex items-center"
+                    title="Delete Tournament"
+                  >
+                    <span class="material-symbols-outlined text-[16px]">delete</span>
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -377,6 +400,68 @@
         </div>
       </div>
 
+      <!-- Club Manager Tab -->
+      <div v-else-if="activeTab === 'clubs'" class="space-y-md animate-fade-in">
+        <div class="flex justify-between items-center pb-sm border-b border-outline-variant">
+          <h3 class="font-headline-md text-sm font-bold text-primary flex items-center gap-xs">
+            <span class="material-symbols-outlined text-secondary">groups</span>
+            Sports Clubs Management
+          </h3>
+          <button 
+            @click="openCreateClubModal" 
+            class="bg-primary text-white font-label-bold text-xs px-4 py-2.5 rounded-lg hover:bg-surface-tint transition-colors flex items-center gap-1.5 shadow-sm cursor-pointer"
+          >
+            <span class="material-symbols-outlined text-sm font-bold">add</span>
+            Create Club
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+          <div 
+            v-for="club in store.clubs" 
+            :key="club"
+            class="bg-white border border-outline-variant rounded-xl p-md shadow-sm space-y-md flex flex-col justify-between"
+          >
+            <div class="space-y-sm">
+              <div class="flex justify-between items-start">
+                <h4 class="font-headline-sm text-sm font-bold text-primary">{{ club }} Club</h4>
+                <span class="material-symbols-outlined text-secondary text-lg">sports_soccer</span>
+              </div>
+              <div class="space-y-1 text-xs text-on-surface-variant">
+                <p class="flex items-center gap-1">
+                  <span class="material-symbols-outlined text-xs">group</span>
+                  <span>Joined Members: <span class="font-semibold text-primary">{{ getClubMemberCount(club) }}</span></span>
+                </p>
+                <p class="flex items-center gap-1">
+                  <span class="material-symbols-outlined text-xs">badge</span>
+                  <span>Assigned Coaches: <span class="font-semibold text-primary">{{ getClubCoachCount(club) }}</span></span>
+                </p>
+              </div>
+            </div>
+
+            <div class="flex gap-2 pt-2 border-t border-outline-variant/30">
+              <button 
+                @click="openEditClubModal(club)"
+                class="flex-grow border border-outline-variant hover:bg-slate-50 text-primary py-1.5 rounded text-xs font-semibold transition-colors cursor-pointer flex items-center justify-center gap-1"
+              >
+                <span class="material-symbols-outlined text-xs">edit</span> Rename
+              </button>
+              <button 
+                @click="deleteClub(club)"
+                class="border border-red-200 hover:bg-red-50 text-error px-3 py-1.5 rounded text-xs font-semibold transition-colors cursor-pointer flex items-center justify-center"
+                title="Delete Club"
+              >
+                <span class="material-symbols-outlined text-xs">delete</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <div v-if="store.clubs.length === 0" class="text-center py-md text-xs text-on-surface-variant bg-white border rounded-xl">
+          No clubs currently exist. Use "Create Club" to add one.
+        </div>
+      </div>
+
       <!-- Broadcast announcement dialog overlay -->
       <div v-if="showBroadcastModal" class="fixed inset-0 bg-primary/40 z-50 flex items-center justify-center p-md">
         <form @submit.prevent="submitBroadcast" class="bg-white border border-outline-variant rounded-xl w-full max-w-md shadow-lg flex flex-col p-md space-y-md" @click.stop>
@@ -437,11 +522,7 @@
             <div class="space-y-1 text-xs">
               <label class="block font-semibold text-on-surface-variant">Sport</label>
               <select v-model="newTournamentForm.sport" class="w-full bg-slate-50 border border-outline-variant rounded px-3 py-2 outline-none focus:border-primary">
-                <option value="Badminton">Badminton</option>
-                <option value="Volleyball">Volleyball</option>
-                <option value="Tennis">Tennis</option>
-                <option value="Swimming">Swimming</option>
-                <option value="Athletics">Athletics</option>
+                <option v-for="sport in store.clubs" :key="sport" :value="sport">{{ sport }}</option>
               </select>
             </div>
             <div class="space-y-1 text-xs">
@@ -486,6 +567,137 @@
         </form>
       </div>
 
+      <!-- Edit Tournament Dialog overlay -->
+      <div v-if="showEditTournamentModal" class="fixed inset-0 bg-primary/40 backdrop-blur-sm z-50 flex items-center justify-center p-md">
+        <form @submit.prevent="submitEditTournament" class="bg-white border border-outline-variant rounded-xl w-full max-w-md shadow-lg flex flex-col p-md space-y-md animate-fade-in" @click.stop>
+          <div class="flex justify-between items-center border-b border-outline-variant pb-sm">
+            <h3 class="font-headline-sm text-sm font-bold text-primary flex items-center gap-1">
+              <span class="material-symbols-outlined text-secondary">edit</span>
+              Edit Tournament
+            </h3>
+            <button type="button" @click="showEditTournamentModal = false" class="p-1 hover:bg-slate-100 rounded-full cursor-pointer">
+              <span class="material-symbols-outlined text-xl">close</span>
+            </button>
+          </div>
+          
+          <div class="space-y-1 text-xs">
+            <label class="block font-semibold text-on-surface-variant">Tournament Name</label>
+            <input v-model="editTournamentForm.name" class="w-full bg-slate-50 border border-outline-variant rounded px-3 py-2 outline-none focus:border-primary" placeholder="e.g. Spring Rumbles Open" required />
+          </div>
+
+          <div class="grid grid-cols-2 gap-sm">
+            <div class="space-y-1 text-xs">
+              <label class="block font-semibold text-on-surface-variant">Sport</label>
+              <select v-model="editTournamentForm.sport" class="w-full bg-slate-50 border border-outline-variant rounded px-3 py-2 outline-none focus:border-primary">
+                <option v-for="sport in store.clubs" :key="sport" :value="sport">{{ sport }}</option>
+              </select>
+            </div>
+            <div class="space-y-1 text-xs">
+              <label class="block font-semibold text-on-surface-variant">Bracket Format</label>
+              <select v-model="editTournamentForm.format" class="w-full bg-slate-50 border border-outline-variant rounded px-3 py-2 outline-none focus:border-primary">
+                <option value="Knockout">Knockout</option>
+                <option value="Round-robin">Round Robin</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-sm">
+            <div class="space-y-1 text-xs">
+              <label class="block font-semibold text-on-surface-variant">Tournament Date</label>
+              <input type="date" v-model="editTournamentForm.date" class="w-full bg-slate-50 border border-outline-variant rounded px-3 py-2 outline-none focus:border-primary" required />
+            </div>
+            <div class="space-y-1 text-xs">
+              <label class="block font-semibold text-on-surface-variant">Reg. Deadline</label>
+              <input type="date" v-model="editTournamentForm.deadline" class="w-full bg-slate-50 border border-outline-variant rounded px-3 py-2 outline-none focus:border-primary" required />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-sm">
+            <div class="space-y-1 text-xs">
+              <label class="block font-semibold text-on-surface-variant">Venue</label>
+              <input v-model="editTournamentForm.venue" class="w-full bg-slate-50 border border-outline-variant rounded px-3 py-2 outline-none focus:border-primary" placeholder="e.g. Badminton Court A" required />
+            </div>
+            <div class="space-y-1 text-xs">
+              <label class="block font-semibold text-on-surface-variant">Max Players / Teams</label>
+              <select v-model="editTournamentForm.max" class="w-full bg-slate-50 border border-outline-variant rounded px-3 py-2 outline-none focus:border-primary">
+                <option value="2">2 Players (Finals)</option>
+                <option value="4">4 Players (Semifinals)</option>
+                <option value="8">8 Players (Quarterfinals)</option>
+                <option value="16">16 Players</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="space-y-1 text-xs">
+            <label class="block font-semibold text-on-surface-variant">Status</label>
+            <select v-model="editTournamentForm.status" class="w-full bg-slate-50 border border-outline-variant rounded px-3 py-2 outline-none focus:border-primary">
+              <option value="Active">Active</option>
+              <option value="Draft">Draft</option>
+              <option value="Registration Closed">Registration Closed</option>
+              <option value="Finished">Finished</option>
+              <option value="Completed">Completed</option>
+            </select>
+          </div>
+
+          <button type="submit" class="w-full py-2.5 bg-primary text-on-primary font-label-bold text-xs rounded hover:bg-surface-tint transition-all shadow-sm cursor-pointer">
+            Save Changes
+          </button>
+        </form>
+      </div>
+
+      <!-- Create Club Dialog overlay -->
+      <div v-if="showCreateClubModal" class="fixed inset-0 bg-primary/40 backdrop-blur-sm z-50 flex items-center justify-center p-md">
+        <form @submit.prevent="submitCreateClub" class="bg-white border border-outline-variant rounded-xl w-full max-w-sm shadow-lg flex flex-col p-md space-y-md animate-fade-in" @click.stop>
+          <div class="flex justify-between items-center border-b border-outline-variant pb-sm">
+            <h3 class="font-headline-sm text-sm font-bold text-primary flex items-center gap-1">
+              <span class="material-symbols-outlined text-secondary">groups</span>
+              Create New Club
+            </h3>
+            <button type="button" @click="showCreateClubModal = false" class="p-1 hover:bg-slate-100 rounded-full cursor-pointer">
+              <span class="material-symbols-outlined text-xl">close</span>
+            </button>
+          </div>
+          
+          <div class="space-y-1 text-xs">
+            <label class="block font-semibold text-on-surface-variant">Club Name</label>
+            <input v-model="newClubName" class="w-full bg-slate-50 border border-outline-variant rounded px-3 py-2 outline-none focus:border-primary" placeholder="e.g. Table Tennis" required />
+          </div>
+
+          <button type="submit" class="w-full py-2.5 bg-primary text-on-primary font-label-bold text-xs rounded hover:bg-surface-tint transition-all shadow-sm cursor-pointer">
+            Create Club
+          </button>
+        </form>
+      </div>
+
+      <!-- Rename Club Dialog overlay -->
+      <div v-if="showEditClubModal" class="fixed inset-0 bg-primary/40 backdrop-blur-sm z-50 flex items-center justify-center p-md">
+        <form @submit.prevent="submitRenameClub" class="bg-white border border-outline-variant rounded-xl w-full max-w-sm shadow-lg flex flex-col p-md space-y-md animate-fade-in" @click.stop>
+          <div class="flex justify-between items-center border-b border-outline-variant pb-sm">
+            <h3 class="font-headline-sm text-sm font-bold text-primary flex items-center gap-1">
+              <span class="material-symbols-outlined text-secondary">groups</span>
+              Rename Club
+            </h3>
+            <button type="button" @click="showEditClubModal = false" class="p-1 hover:bg-slate-100 rounded-full cursor-pointer">
+              <span class="material-symbols-outlined text-xl">close</span>
+            </button>
+          </div>
+          
+          <div class="space-y-1 text-xs">
+            <label class="block font-semibold text-on-surface-variant">Current Name</label>
+            <input :value="editingClubOldName" disabled class="w-full bg-slate-100 border border-outline-variant rounded px-3 py-2 outline-none cursor-not-allowed opacity-75" />
+          </div>
+
+          <div class="space-y-1 text-xs">
+            <label class="block font-semibold text-on-surface-variant">New Club Name</label>
+            <input v-model="editingClubNewName" class="w-full bg-slate-50 border border-outline-variant rounded px-3 py-2 outline-none focus:border-primary" placeholder="e.g. Table Tennis Elite" required />
+          </div>
+
+          <button type="submit" class="w-full py-2.5 bg-primary text-on-primary font-label-bold text-xs rounded hover:bg-surface-tint transition-all shadow-sm cursor-pointer">
+            Save Changes
+          </button>
+        </form>
+      </div>
+
     </div>
   </PortalLayout>
 </template>
@@ -500,6 +712,24 @@ const store = useClubStore()
 const activeTab = ref('overview')
 const showBroadcastModal = ref(false)
 const showCreateTournamentModal = ref(false)
+const showEditTournamentModal = ref(false)
+const showCreateClubModal = ref(false)
+const showEditClubModal = ref(false)
+const newClubName = ref('')
+const editingClubOldName = ref('')
+const editingClubNewName = ref('')
+
+const editTournamentForm = reactive({
+  id: null,
+  name: '',
+  sport: 'Tennis',
+  format: 'Knockout',
+  date: '',
+  venue: '',
+  max: 8,
+  deadline: '',
+  status: 'Active'
+})
 
 const broadcastForm = reactive({
   title: '',
@@ -618,5 +848,86 @@ const advanceRound = (eventId) => {
 const announceWinner = (eventId) => {
   store.announceTournamentWinner(eventId)
   alert('Winner successfully announced, broadcasted, and tournament finished!')
+}
+
+const openEditTournamentModal = (event) => {
+  editTournamentForm.id = event.id
+  editTournamentForm.name = event.name
+  editTournamentForm.sport = event.sport
+  editTournamentForm.format = event.format
+  editTournamentForm.date = event.date
+  editTournamentForm.venue = event.venue
+  editTournamentForm.max = event.max
+  editTournamentForm.deadline = event.deadline
+  editTournamentForm.status = event.status
+  showEditTournamentModal.value = true
+}
+
+const submitEditTournament = () => {
+  store.updateTournament(editTournamentForm.id, {
+    name: editTournamentForm.name,
+    sport: editTournamentForm.sport,
+    format: editTournamentForm.format,
+    date: editTournamentForm.date,
+    venue: editTournamentForm.venue,
+    max: editTournamentForm.max,
+    deadline: editTournamentForm.deadline,
+    status: editTournamentForm.status
+  })
+  showEditTournamentModal.value = false
+  alert(`Tournament "${editTournamentForm.name}" updated successfully.`)
+}
+
+const deleteTournament = (id, name) => {
+  if (confirm(`Are you sure you want to delete the tournament "${name}"?`)) {
+    store.deleteTournament(id)
+    alert(`Tournament "${name}" deleted successfully.`)
+  }
+}
+
+const openCreateClubModal = () => {
+  newClubName.value = ''
+  showCreateClubModal.value = true
+}
+
+const submitCreateClub = () => {
+  const res = store.createClub(newClubName.value)
+  if (res.success) {
+    showCreateClubModal.value = false
+    alert(`Club "${newClubName.value}" created successfully.`)
+  } else {
+    alert(res.message)
+  }
+}
+
+const openEditClubModal = (clubName) => {
+  editingClubOldName.value = clubName
+  editingClubNewName.value = clubName
+  showEditClubModal.value = true
+}
+
+const submitRenameClub = () => {
+  const res = store.updateClub(editingClubOldName.value, editingClubNewName.value)
+  if (res.success) {
+    showEditClubModal.value = false
+    alert(`Club renamed from "${editingClubOldName.value}" to "${editingClubNewName.value}" successfully.`)
+  } else {
+    alert(res.message)
+  }
+}
+
+const deleteClub = (clubName) => {
+  if (confirm(`Are you sure you want to delete the club "${clubName}"? This will remove this club from all member profiles.`)) {
+    store.deleteClub(clubName)
+    alert(`Club "${clubName}" deleted successfully.`)
+  }
+}
+
+const getClubMemberCount = (clubName) => {
+  return store.users.filter(u => u.role === 'member' && u.clubs && u.clubs.includes(clubName)).length
+}
+
+const getClubCoachCount = (clubName) => {
+  return store.users.filter(u => u.role === 'coach' && u.coachingSport === clubName).length
 }
 </script>

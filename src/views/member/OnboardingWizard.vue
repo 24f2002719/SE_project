@@ -94,7 +94,7 @@
                 <div class="space-y-1 pt-xs">
                   <label class="font-label-bold text-on-surface-variant text-xs">Clubs You Want to Join</label>
                   <div class="grid grid-cols-2 md:grid-cols-3 gap-sm text-xs mt-1">
-                    <label v-for="club in ['Badminton', 'Volleyball', 'Tennis', 'Swimming', 'Athletics']" :key="club" class="flex items-center gap-2 p-2 border border-outline-variant rounded-lg bg-slate-50/50 hover:bg-slate-50 cursor-pointer">
+                    <label v-for="club in store.clubs" :key="club" class="flex items-center gap-2 p-2 border border-outline-variant rounded-lg bg-slate-50/50 hover:bg-slate-50 cursor-pointer">
                       <input type="checkbox" v-model="form.clubs" :value="club" class="h-4.5 w-4.5 rounded border-outline-variant text-primary" />
                       <span>{{ club }} Club</span>
                     </label>

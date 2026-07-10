@@ -49,33 +49,32 @@
               </div>
             </div>
 
-            <button 
-              type="submit" 
-              class="bg-primary hover:bg-surface-tint text-on-primary font-label-bold text-xs px-6 py-2.5 rounded shadow-sm transition-colors mt-4"
-            >
-              Save Profile Changes
-            </button>
+            <!-- Coaching Sport display for coach in details -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-md mt-4" v-if="store.currentUser?.role === 'coach'">
+              <div class="space-y-1">
+                <label class="block font-label-bold text-xs text-on-surface-variant">Coaching Sport (Read-Only)</label>
+                <input :value="store.currentUser?.coachingSport" disabled class="w-full bg-slate-100 border border-outline-variant rounded px-3 py-2.5 font-body-sm outline-none cursor-not-allowed opacity-70 text-on-surface-variant" type="text" />
+              </div>
+            </div>
 
             <!-- Sports Clubs Selection (only for member) -->
             <div v-if="store.currentUser?.role === 'member'" class="border-t border-outline-variant/30 pt-md mt-md space-y-md">
-              <h3 class="font-label-bold text-xs text-primary uppercase tracking-wider">My Sports Clubs (Select Multiple)</h3>
+              <h3 class="font-label-bold text-xs text-primary uppercase tracking-wider">My Sports Clubs</h3>
               <div class="grid grid-cols-2 md:grid-cols-3 gap-sm text-xs">
-                <label v-for="club in ['Badminton', 'Volleyball', 'Tennis', 'Swimming', 'Athletics']" :key="club" class="flex items-center gap-2 p-sm border border-outline-variant rounded-lg bg-slate-50/50 hover:bg-slate-50 cursor-pointer">
+                <label v-for="club in store.clubs" :key="club" class="flex items-center gap-2 p-sm border border-outline-variant rounded-lg bg-slate-50/50 hover:bg-slate-50 cursor-pointer">
                   <input type="checkbox" v-model="profileForm.clubs" :value="club" class="h-4 w-4 rounded border-outline-variant text-primary" />
                   <span>{{ club }} Club</span>
                 </label>
               </div>
             </div>
 
-            <!-- Coaching Assignment Selection (only for coach) -->
-            <div v-if="store.currentUser?.role === 'coach'" class="border-t border-outline-variant/30 pt-md mt-md space-y-md">
-              <h3 class="font-label-bold text-xs text-primary uppercase tracking-wider">Coaching Sport Assignment (Select Single)</h3>
-              <div class="grid grid-cols-2 md:grid-cols-3 gap-sm text-xs">
-                <label v-for="sport in ['Badminton', 'Volleyball', 'Tennis', 'Swimming', 'Athletics']" :key="sport" class="flex items-center gap-2 p-sm border border-outline-variant rounded-lg bg-slate-50/50 hover:bg-slate-50 cursor-pointer">
-                  <input type="radio" v-model="profileForm.coachingSport" :value="sport" class="h-4 w-4 rounded-full border-outline-variant text-primary" />
-                  <span>{{ sport }} Coach</span>
-                </label>
-              </div>
+            <div class="pt-sm">
+              <button 
+                type="submit" 
+                class="bg-primary hover:bg-surface-tint text-on-primary font-label-bold text-xs px-6 py-2.5 rounded shadow-sm transition-colors mt-4"
+              >
+                Save Profile Changes
+              </button>
             </div>
           </form>
         </div>

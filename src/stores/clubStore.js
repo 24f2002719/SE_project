@@ -4,6 +4,9 @@ export const useClubStore = defineStore('club', {
   state: () => ({
     currentUser: null,
     
+    // Clubs list
+    clubs: ['Badminton', 'Volleyball', 'Tennis', 'Swimming', 'Athletics'],
+    
     // Accounts list
     users: [
       { name: 'Alex Mercer', email: 'alex@nexsport.com', password: 'password123', role: 'member', tier: 'Pro', onboardingStatus: 'pending', membershipStatus: 'Active', membershipDue: 0, attendanceRate: 85, clubs: ['Badminton', 'Tennis'] },
@@ -778,6 +781,128 @@ export const useClubStore = defineStore('club', {
         return { success: true }
       }
       return { success: false }
+    },
+
+    deleteTournament(id) {
+      const index = this.events.findIndex(e => e.id === id)
+      if (index !== -1) {
+        this.events.splice(index, 1)
+        return { success: true }
+      }
+      return { success: false, message: 'Tournament not found.' }
+    },
+
+    updateTournament(id, updatedData) {
+      const event = this.events.find(e => e.id === id)
+      if (event) {
+        Object.assign(event, updatedData)
+        if (updatedData.max) {
+          event.max = parseInt(updatedData.max, 10)
+        }
+        return { success: true, event }
+      }
+      return { success: false, message: 'Tournament not found.' }
+    },
+
+    createClub(name) {
+      if (!name) return { success: false, message: 'Club name is required.' }
+      if (!this.clubs.includes(name)) {
+        this.clubs.push(name)
+        return { success: true }
+      }
+      return { success: false, message: 'Club already exists.' }
+    },
+
+    updateClub(oldName, newName) {
+      if (!newName) return { success: false, message: 'New club name is required.' }
+      const index = this.clubs.indexOf(oldName)
+      if (index !== -1) {
+        this.clubs[index] = newName
+        // Update users
+        this.users.forEach(u => {
+          if (u.clubs && u.clubs.includes(oldName)) {
+            u.clubs = u.clubs.map(c => c === oldName ? newName : c)
+          }
+          if (u.coachingSport === oldName) {
+            u.coachingSport = newName
+          }
+        })
+        if (this.currentUser) {
+          if (this.currentUser.clubs && this.currentUser.clubs.includes(oldName)) {
+            this.currentUser.clubs = this.currentUser.clubs.map(c => c === oldName ? newName : c)
+          }
+          if (this.currentUser.coachingSport === oldName) {
+            this.currentUser.coachingSport = newName
+          }
+          sessionStorage.setItem('user', JSON.stringify(this.currentUser))
+        }
+        return { success: true }
+      }
+      return { success: false, message: 'Club not found.' }
+    },
+
+    deleteClub(name) {
+      const index = this.clubs.indexOf(name)
+      if (index !== -1) {
+        this.clubs.splice(index, 1)
+        // Update users
+        this.users.forEach(u => {
+          if (u.clubs && u.clubs.includes(name)) {
+            u.clubs = u.clubs.filter(c => c !== name)
+          }
+          if (u.coachingSport === name) {
+            u.coachingSport = ''
+          }
+        })
+        if (this.currentUser) {
+          if (this.currentUser.clubs && this.currentUser.clubs.includes(name)) {
+            this.currentUser.clubs = this.currentUser.clubs.filter(c => c !== name)
+          }
+          if (this.currentUser.coachingSport === name) {
+            this.currentUser.coachingSport = ''
+          }
+          sessionStorage.setItem('user', JSON.stringify(this.currentUser))
+        }
+        return { success: true }
+      }
+      return { success: false, message: 'Club not found.' }
+    },
+
+    addCourt(name, type, status, time, next = 'Open', accent = '#10B981') {
+      const id = name.toLowerCase().replace(/\s+/g, '-') + '-' + Math.floor(100 + Math.random() * 900)
+      const newCourt = {
+        id,
+        name,
+        type,
+        status,
+        time,
+        next,
+        accent
+      }
+      this.courts.push(newCourt)
+      return { success: true, court: newCourt }
+    },
+
+    updateCourt(id, updatedFields) {
+      const court = this.courts.find(c => c.id === id)
+      if (court) {
+        Object.assign(court, updatedFields)
+        return { success: true, court }
+      }
+      return { success: false, message: 'Facility not found.' }
+    },
+
+    deleteCourt(id) {
+      const index = this.courts.findIndex(c => c.id === id)
+      if (index !== -1) {
+        this.courts.splice(index, 1)
+        // Also clean up any bookings for this facility
+        this.bookings = this.bookings.filter(b => b.courtId !== id)
+        // Also clean up any equipment associated with this facility
+        this.equipment = this.equipment.filter(eq => eq.facilityId !== id)
+        return { success: true }
+      }
+      return { success: false, message: 'Facility not found.' }
     }
   }
 })

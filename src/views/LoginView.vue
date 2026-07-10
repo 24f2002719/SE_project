@@ -192,7 +192,7 @@
             <div v-if="regRole === 'member'" class="space-y-xs pt-1">
               <label class="block font-label-bold text-label-bold text-on-surface-variant mb-xs">Select Clubs to Join</label>
               <div class="grid grid-cols-2 gap-xs text-xs">
-                <label v-for="club in ['Badminton', 'Volleyball', 'Tennis', 'Swimming', 'Athletics']" :key="club" class="flex items-center gap-2 p-2.5 border border-outline-variant rounded bg-slate-50/50 hover:bg-slate-50 cursor-pointer">
+                <label v-for="club in store.clubs" :key="club" class="flex items-center gap-2 p-2.5 border border-outline-variant rounded bg-slate-50/50 hover:bg-slate-50 cursor-pointer">
                   <input type="checkbox" v-model="regClubs" :value="club" class="h-4 w-4 rounded border-outline-variant text-primary" />
                   <span>{{ club }} Club</span>
                 </label>
@@ -204,7 +204,7 @@
               <label class="block font-label-bold text-label-bold text-on-surface-variant mb-xs" for="reg-coaching-sport">Select Coaching Sport</label>
               <select v-model="regCoachingSport" class="block w-full px-3 py-3 border border-outline-variant rounded bg-white text-on-surface font-body-md input-focus-ring outline-none" id="reg-coaching-sport" required>
                 <option value="" disabled>Select Coaching Sport</option>
-                <option v-for="sport in ['Badminton', 'Volleyball', 'Tennis', 'Swimming', 'Athletics']" :key="sport" :value="sport">{{ sport }} Coach</option>
+                <option v-for="sport in store.clubs" :key="sport" :value="sport">{{ sport }} Coach</option>
               </select>
             </div>
 
