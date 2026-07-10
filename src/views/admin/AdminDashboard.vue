@@ -561,15 +561,23 @@
             </div>
           </div>
 
-          <div class="space-y-1 text-xs">
+          <div class="flex items-center justify-between p-2.5 bg-slate-50 border border-outline-variant rounded-md">
+            <span class="text-xs font-semibold text-on-surface-variant">Require Attendance Verification</span>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" v-model="newTournamentForm.attendanceRequired" class="sr-only peer" />
+              <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary"></div>
+            </label>
+          </div>
+
+          <div v-if="newTournamentForm.attendanceRequired" class="space-y-1 text-xs animate-fade-in">
             <label class="flex justify-between font-semibold text-on-surface-variant">
               <span>Minimum Attendance Criteria</span>
               <span class="text-secondary font-bold">{{ newTournamentForm.minAttendance }}%</span>
             </label>
-            <input type="range" min="50" max="100" step="5" v-model="newTournamentForm.minAttendance" class="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-primary" />
+            <input type="range" min="0" max="100" step="5" v-model="newTournamentForm.minAttendance" class="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-primary" />
             <div class="flex justify-between text-[10px] text-outline">
+              <span>0%</span>
               <span>50%</span>
-              <span>75%</span>
               <span>100%</span>
             </div>
           </div>
@@ -641,15 +649,23 @@
             </div>
           </div>
 
-          <div class="space-y-1 text-xs">
+          <div class="flex items-center justify-between p-2.5 bg-slate-50 border border-outline-variant rounded-md">
+            <span class="text-xs font-semibold text-on-surface-variant">Require Attendance Verification</span>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" v-model="editTournamentForm.attendanceRequired" class="sr-only peer" />
+              <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary"></div>
+            </label>
+          </div>
+
+          <div v-if="editTournamentForm.attendanceRequired" class="space-y-1 text-xs animate-fade-in">
             <label class="flex justify-between font-semibold text-on-surface-variant">
               <span>Minimum Attendance Criteria</span>
               <span class="text-secondary font-bold">{{ editTournamentForm.minAttendance }}%</span>
             </label>
-            <input type="range" min="50" max="100" step="5" v-model="editTournamentForm.minAttendance" class="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-primary" />
+            <input type="range" min="0" max="100" step="5" v-model="editTournamentForm.minAttendance" class="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-primary" />
             <div class="flex justify-between text-[10px] text-outline">
+              <span>0%</span>
               <span>50%</span>
-              <span>75%</span>
               <span>100%</span>
             </div>
           </div>
@@ -755,7 +771,8 @@ const editTournamentForm = reactive({
   max: 8,
   deadline: '',
   status: 'Active',
-  minAttendance: 75
+  minAttendance: 75,
+  attendanceRequired: true
 })
 
 const broadcastForm = reactive({
@@ -772,7 +789,8 @@ const newTournamentForm = reactive({
   venue: '',
   max: 8,
   deadline: '',
-  minAttendance: 75
+  minAttendance: 75,
+  attendanceRequired: true
 })
 
 const formatMonth = (dateStr) => {
@@ -836,6 +854,7 @@ const openCreateTournamentModal = () => {
   newTournamentForm.max = 8
   newTournamentForm.deadline = ''
   newTournamentForm.minAttendance = 75
+  newTournamentForm.attendanceRequired = true
   showCreateTournamentModal.value = true
 }
 
@@ -848,7 +867,8 @@ const submitCreateTournament = () => {
     newTournamentForm.venue,
     newTournamentForm.max,
     newTournamentForm.deadline,
-    newTournamentForm.minAttendance
+    newTournamentForm.minAttendance,
+    newTournamentForm.attendanceRequired
   )
   showCreateTournamentModal.value = false
   activeTab.value = 'tournaments'
@@ -891,6 +911,7 @@ const openEditTournamentModal = (event) => {
   editTournamentForm.deadline = event.deadline
   editTournamentForm.status = event.status
   editTournamentForm.minAttendance = event.minAttendance !== undefined ? event.minAttendance : 75
+  editTournamentForm.attendanceRequired = event.attendanceRequired !== false
   showEditTournamentModal.value = true
 }
 
@@ -904,7 +925,8 @@ const submitEditTournament = () => {
     max: editTournamentForm.max,
     deadline: editTournamentForm.deadline,
     status: editTournamentForm.status,
-    minAttendance: editTournamentForm.minAttendance
+    minAttendance: editTournamentForm.minAttendance,
+    attendanceRequired: editTournamentForm.attendanceRequired
   })
   showEditTournamentModal.value = false
   alert(`Tournament "${editTournamentForm.name}" updated successfully.`)

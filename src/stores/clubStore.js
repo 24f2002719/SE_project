@@ -58,7 +58,7 @@ export const useClubStore = defineStore('club', {
 
     // Tournaments & League events
     events: [
-      { id: 1, name: 'Winter Classic Tennis', sport: 'Tennis', format: 'Knockout', date: '2026-11-12', venue: 'Tennis Center 1', registered: 5, max: 8, status: 'Active', deadline: '2026-11-05', minAttendance: 75,
+      { id: 1, name: 'Winter Classic Tennis', sport: 'Tennis', format: 'Knockout', date: '2026-11-12', venue: 'Tennis Center 1', registered: 5, max: 8, status: 'Active', deadline: '2026-11-05', minAttendance: 75, attendanceRequired: true,
         roster: [
           { name: 'Alex Mercer', email: 'alex@nexsport.com', attendanceRate: 85, status: 'Approved' },
           { name: 'John Doe', email: 'john@nexsport.com', attendanceRate: 78, status: 'Approved' },
@@ -71,13 +71,13 @@ export const useClubStore = defineStore('club', {
           { round: 'Semifinals', match: 'Match 2', player1: 'Michael Park', player2: 'Sara Connor', winner: '' }
         ]
       },
-      { id: 2, name: 'Youth Swim Meet', sport: 'Swimming', format: 'Round-robin', date: '2026-12-05', venue: 'Aquatics Complex', registered: 4, max: 8, status: 'Active', deadline: '2026-11-30', minAttendance: 75,
+      { id: 2, name: 'Youth Swim Meet', sport: 'Swimming', format: 'Round-robin', date: '2026-12-05', venue: 'Aquatics Complex', registered: 4, max: 8, status: 'Active', deadline: '2026-11-30', minAttendance: 75, attendanceRequired: true,
         roster: [
           { name: 'Emma Wilson', email: 'emma@nexsport.com', attendanceRate: 64, status: 'Pending Approval' }
         ],
         fixtures: [] 
       },
-      { id: 3, name: 'Badminton Spring Rumbles', sport: 'Badminton', format: 'Knockout', date: '2026-03-15', venue: 'Badminton Court A', registered: 2, max: 16, status: 'Draft', deadline: '2026-03-10', minAttendance: 75, roster: [], fixtures: [] }
+      { id: 3, name: 'Badminton Spring Rumbles', sport: 'Badminton', format: 'Knockout', date: '2026-03-15', venue: 'Badminton Court A', registered: 2, max: 16, status: 'Draft', deadline: '2026-03-10', minAttendance: 75, attendanceRequired: true, roster: [], fixtures: [] }
     ],
 
     // Support/Grievance Tickets
@@ -674,7 +674,7 @@ export const useClubStore = defineStore('club', {
       return { success: false, message: 'User not found.' }
     },
 
-    createTournament(name, sport, format, date, venue, max, deadline, minAttendance = 75) {
+    createTournament(name, sport, format, date, venue, max, deadline, minAttendance = 75, attendanceRequired = true) {
       const newEvent = {
         id: Date.now(),
         name,
@@ -687,6 +687,7 @@ export const useClubStore = defineStore('club', {
         status: 'Active',
         deadline,
         minAttendance: parseInt(minAttendance, 10),
+        attendanceRequired: !!attendanceRequired,
         roster: [],
         fixtures: []
       }
@@ -799,6 +800,12 @@ export const useClubStore = defineStore('club', {
         Object.assign(event, updatedData)
         if (updatedData.max) {
           event.max = parseInt(updatedData.max, 10)
+        }
+        if (updatedData.minAttendance !== undefined) {
+          event.minAttendance = parseInt(updatedData.minAttendance, 10)
+        }
+        if (updatedData.attendanceRequired !== undefined) {
+          event.attendanceRequired = !!updatedData.attendanceRequired
         }
         return { success: true, event }
       }
